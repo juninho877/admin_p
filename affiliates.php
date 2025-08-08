@@ -26,7 +26,7 @@ $users = [];
 if ($searchTerm) {
     $db = new Database();
     $users = $db->fetchAll(
-        "SELECT id, name, email, codigo_indicacao FROM users 
+        "SELECT id, name, email, codigo_indicacao, codigo_indicador FROM users 
          WHERE name LIKE ? OR email LIKE ? 
          ORDER BY name LIMIT 20",
         ["%{$searchTerm}%", "%{$searchTerm}%"]

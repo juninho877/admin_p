@@ -155,13 +155,23 @@ class User {
             return [];
         }
         
-        $sql = "SELECT id, name, email, codigo_indicacao, created_at,
+        // Primeiro, buscar o código de indicação do usuário
+        $userCode = $this->db->fetch(
+            "SELECT codigo_indicacao FROM users WHERE id = ?",
+            [$userId]
+        );
+        
+        if (!$userCode) {
+            return [];
+        }
+        
+        $sql = "SELECT id, name, email, codigo_indicacao, codigo_indicador, created_at,
                        (SELECT saldo FROM carteiras WHERE user_id = users.id) as saldo,
                        (SELECT COUNT(*) FROM users WHERE codigo_indicador = users.codigo_indicacao) as direct_referrals
                 FROM users 
-                WHERE codigo_indicador = (SELECT codigo_indicacao FROM users WHERE id = ?)";
+                WHERE codigo_indicador = ?";
         
-        $directReferrals = $this->db->fetchAll($sql, [$userId]);
+        $directReferrals = $this->db->fetchAll($sql, [$userCode['codigo_indicacao']]);
         
         $network = [];
         foreach ($directReferrals as $referral) {
@@ -177,35 +187,21 @@ class User {
      * Estatísticas da rede de afiliados
      */
     public function getAffiliateStats($userId) {
+        // Primeiro, buscar o código de indicação do usuário
+        $userCode = $this->db->fetch(
+            "SELECT codigo_indicacao FROM users WHERE id = ?",
+            [$userId]
+        );
+        
+        if (!$userCode) {
+            return [];
+        }
+        
         $stats = [];
         
         for ($level = 1; $level <= 10; $level++) {
-            $sql = "WITH RECURSIVE affiliate_tree AS (
-                        SELECT id, codigo_indicacao, 1 as level
-                        FROM users 
-                        WHERE codigo_indicador = (SELECT codigo_indicacao FROM users WHERE id = ?)
-                        
-                        UNION ALL
-                        
-                        SELECT u.id, u.codigo_indicacao, at.level + 1
-                        FROM users u
-                        INNER JOIN affiliate_tree at ON u.codigo_indicador = at.codigo_indicacao
-                        WHERE at.level < ?
-                    )
-                    SELECT 
-                        COUNT(*) as total_users,
-                        COALESCE(SUM(d.valor_usd), 0) as total_deposits,
-                        COALESCE(SUM(s.valor_usd), 0) as total_withdrawals,
-                        COALESCE(SUM(up.valor_investido), 0) as total_investments,
-                        COALESCE(SUM(c.valor), 0) as total_commissions
-                    FROM affiliate_tree at
-                    LEFT JOIN depositos d ON d.user_id = at.id AND d.status = 'confirmado'
-                    LEFT JOIN saques s ON s.user_id = at.id AND s.status = 'aprovado'
-                    LEFT JOIN usuario_produtos up ON up.user_id = at.id
-                    LEFT JOIN comissoes c ON c.origem_user_id = at.id AND c.user_id = ?
-                    WHERE at.level = ?";
-            
-            $result = $this->db->fetch($sql, [$userId, $level, $userId, $level]);
+            // Usar uma abordagem mais simples para cada nível
+            $result = $this->getStatsForLevel($userCode['codigo_indicacao'], $level, $userId);
             $stats[$level] = $result;
         }
         
@@ -251,6 +247,87 @@ class User {
         } catch (Exception $e) {
             $this->db->getConnection()->rollback();
             throw $e;
+        }
+    }
+    
+    /**
+     * Busca estatísticas para um nível específico
+     */
+    private function getStatsForLevel($rootCode, $targetLevel, $rootUserId) {
+        if ($targetLevel == 1) {
+            // Nível 1: usuários diretamente indicados pelo usuário raiz
+            $sql = "SELECT 
+                        COUNT(DISTINCT u.id) as total_users,
+                        COALESCE(SUM(d.valor_usd), 0) as total_deposits,
+                        COALESCE(SUM(s.valor_usd), 0) as total_withdrawals,
+                        COALESCE(SUM(up.valor_investido), 0) as total_investments,
+                        COALESCE(SUM(c.valor), 0) as total_commissions
+                    FROM users u
+                    LEFT JOIN depositos d ON d.user_id = u.id AND d.status = 'confirmado'
+                    LEFT JOIN saques s ON s.user_id = u.id AND s.status = 'aprovado'
+                    LEFT JOIN usuario_produtos up ON up.user_id = u.id
+                    LEFT JOIN comissoes c ON c.origem_user_id = u.id AND c.user_id = ?
+                    WHERE u.codigo_indicador = ?";
+            
+            return $this->db->fetch($sql, [$rootUserId, $rootCode]);
+        } else {
+            // Para níveis superiores, usar recursão
+            $prevLevelUsers = $this->getUsersAtLevel($rootCode, $targetLevel - 1);
+            
+            if (empty($prevLevelUsers)) {
+                return [
+                    'total_users' => 0,
+                    'total_deposits' => 0,
+                    'total_withdrawals' => 0,
+                    'total_investments' => 0,
+                    'total_commissions' => 0
+                ];
+            }
+            
+            $codes = array_column($prevLevelUsers, 'codigo_indicacao');
+            $placeholders = str_repeat('?,', count($codes) - 1) . '?';
+            
+            $sql = "SELECT 
+                        COUNT(DISTINCT u.id) as total_users,
+                        COALESCE(SUM(d.valor_usd), 0) as total_deposits,
+                        COALESCE(SUM(s.valor_usd), 0) as total_withdrawals,
+                        COALESCE(SUM(up.valor_investido), 0) as total_investments,
+                        COALESCE(SUM(c.valor), 0) as total_commissions
+                    FROM users u
+                    LEFT JOIN depositos d ON d.user_id = u.id AND d.status = 'confirmado'
+                    LEFT JOIN saques s ON s.user_id = u.id AND s.status = 'aprovado'
+                    LEFT JOIN usuario_produtos up ON up.user_id = u.id
+                    LEFT JOIN comissoes c ON c.origem_user_id = u.id AND c.user_id = ?
+                    WHERE u.codigo_indicador IN ($placeholders)";
+            
+            $params = array_merge([$rootUserId], $codes);
+            return $this->db->fetch($sql, $params);
+        }
+    }
+    
+    /**
+     * Busca usuários em um nível específico
+     */
+    private function getUsersAtLevel($rootCode, $level) {
+        if ($level == 1) {
+            return $this->db->fetchAll(
+                "SELECT id, codigo_indicacao FROM users WHERE codigo_indicador = ?",
+                [$rootCode]
+            );
+        } else {
+            $prevLevelUsers = $this->getUsersAtLevel($rootCode, $level - 1);
+            
+            if (empty($prevLevelUsers)) {
+                return [];
+            }
+            
+            $codes = array_column($prevLevelUsers, 'codigo_indicacao');
+            $placeholders = str_repeat('?,', count($codes) - 1) . '?';
+            
+            return $this->db->fetchAll(
+                "SELECT id, codigo_indicacao FROM users WHERE codigo_indicador IN ($placeholders)",
+                $codes
+            );
         }
     }
 }
