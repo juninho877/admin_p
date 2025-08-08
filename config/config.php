@@ -38,16 +38,17 @@ require_once 'database.php';
 
 // Autoload das classes
 spl_autoload_register(function ($class) {
+    $basePath = dirname(__FILE__) . '/..';
     $paths = [
-        'config/',
-        'classes/',
-        'models/',
-        'controllers/',
-        'helpers/'
+        $basePath . '/config/',
+        $basePath . '/classes/',
+        $basePath . '/models/',
+        $basePath . '/controllers/',
+        $basePath . '/helpers/'
     ];
     
     foreach ($paths as $path) {
-        $file = $path . $class . '.php';
+        $file = $path . '/' . $class . '.php';
         if (file_exists($file)) {
             require_once $file;
             break;
@@ -56,8 +57,9 @@ spl_autoload_register(function ($class) {
 });
 
 // Incluir helpers
-require_once 'helpers/functions.php';
-require_once 'helpers/security.php';
+$basePath = dirname(__FILE__) . '/..';
+require_once $basePath . '/helpers/functions.php';
+require_once $basePath . '/helpers/security.php';
 
 // Inicializar conexão global do banco de dados
 $db = new Database();
