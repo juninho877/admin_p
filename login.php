@@ -12,9 +12,12 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = sanitize($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
+    $csrf_token = $_POST['csrf_token'] ?? '';
     
     if (empty($email) || empty($password)) {
         $error = 'Preencha todos os campos';
+    } elseif (!validateCSRFToken($csrf_token)) {
+        $error = 'Token de segurança inválido';
     } else {
         try {
             $authController = new AuthController();
@@ -107,6 +110,8 @@ if (isset($_GET['timeout'])) {
             <?php endif; ?>
             
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                
                 <div class="mb-3">
                     <label for="email" class="form-label">
                         <i class="fas fa-envelope me-2"></i>Email

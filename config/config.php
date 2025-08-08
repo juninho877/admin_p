@@ -33,9 +33,13 @@ define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
 define('CSRF_TOKEN_NAME', 'csrf_token');
 define('SESSION_TIMEOUT', 3600); // 1 hora
 
+// Incluir Database class primeiro
+require_once 'database.php';
+
 // Autoload das classes
 spl_autoload_register(function ($class) {
     $paths = [
+        'config/',
         'classes/',
         'models/',
         'controllers/',
@@ -54,3 +58,6 @@ spl_autoload_register(function ($class) {
 // Incluir helpers
 require_once 'helpers/functions.php';
 require_once 'helpers/security.php';
+
+// Inicializar conexão global do banco de dados
+$db = new Database();

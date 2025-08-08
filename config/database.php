@@ -5,9 +5,9 @@
 
 class Database {
     private $host = 'localhost';
-    private $db_name = 'admin_tesaa';
-    private $username = 'admin_tesaa';
-    private $password = 'admin_tesaa';
+    private $db_name = 'sql_gtar_abit_be';
+    private $username = 'root';
+    private $password = '';
     private $charset = 'utf8mb4';
     private $pdo;
     
@@ -26,7 +26,8 @@ class Database {
             
             $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
+            error_log("Database connection error: " . $e->getMessage());
+            throw new PDOException("Erro de conexão com o banco de dados", (int)$e->getCode());
         }
     }
     

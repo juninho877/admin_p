@@ -85,7 +85,7 @@ function hasPermission($permission) {
  * Registra tentativa de login
  */
 function logLoginAttempt($email, $success = false, $ip = null) {
-    global $db;
+    $db = new Database();
     
     if (!$ip) {
         $ip = $_SERVER['REMOTE_ADDR'];
@@ -94,14 +94,18 @@ function logLoginAttempt($email, $success = false, $ip = null) {
     $sql = "INSERT INTO login_attempts (email, success, ip_address, created_at) 
             VALUES (?, ?, ?, NOW())";
     
-    $db->query($sql, [$email, $success ? 1 : 0, $ip]);
+    try {
+        $db->query($sql, [$email, $success ? 1 : 0, $ip]);
+    } catch (Exception $e) {
+        error_log("Error logging login attempt: " . $e->getMessage());
+    }
 }
 
 /**
  * Verifica bloqueio por tentativas
  */
 function isBlocked($email, $minutes = 15, $maxAttempts = 5) {
-    global $db;
+    $db = new Database();
     
     $sql = "SELECT COUNT(*) as attempts 
             FROM login_attempts 
@@ -109,7 +113,11 @@ function isBlocked($email, $minutes = 15, $maxAttempts = 5) {
             AND success = 0 
             AND created_at > DATE_SUB(NOW(), INTERVAL ? MINUTE)";
     
-    $result = $db->fetch($sql, [$email, $minutes]);
-    
-    return $result['attempts'] >= $maxAttempts;
+    try {
+        $result = $db->fetch($sql, [$email, $minutes]);
+        return $result['attempts'] >= $maxAttempts;
+    } catch (Exception $e) {
+        error_log("Error checking login blocks: " . $e->getMessage());
+        return false;
+    }
 }
