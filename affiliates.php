@@ -136,70 +136,56 @@ include 'includes/header.php';
             </h5>
         </div>
         <div class="card-body">
-            <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th style="min-width: 80px; white-space: nowrap;">Nível</th>
-                            <th style="min-width: 90px; white-space: nowrap;">Usuários</th>
-                            <th style="min-width: 140px; white-space: nowrap;">Total Depositado</th>
-                            <th style="min-width: 120px; white-space: nowrap;">Total Sacado</th>
-                            <th style="min-width: 130px; white-space: nowrap;">Total Investido</th>
-                            <th style="min-width: 140px; white-space: nowrap;">Comissões Geradas</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        $totalUsers = 0;
-                        $totalDeposits = 0;
-                        $totalWithdrawals = 0;
-                        $totalInvestments = 0;
-                        $totalCommissions = 0;
-                        
-                        for ($level = 1; $level <= 10; $level++): 
-                            $stats = $affiliateStats[$level] ?? [
-                                'total_users' => 0,
-                                'total_deposits' => 0,
-                                'total_withdrawals' => 0,
-                                'total_investments' => 0,
-                                'total_commissions' => 0
-                            ];
-                            
-                            $totalUsers += $stats['total_users'];
-                            $totalDeposits += $stats['total_deposits'];
-                            $totalWithdrawals += $stats['total_withdrawals'];
-                            $totalInvestments += $stats['total_investments'];
-                            $totalCommissions += $stats['total_commissions'];
-                        ?>
-                            <tr <?php echo $stats['total_users'] > 0 ? '' : 'class="text-muted"'; ?>>
-                                <td style="white-space: nowrap;"><strong>Nível <?php echo $level; ?></strong></td>
-                                <td style="text-align: center;"><?php echo number_format($stats['total_users']); ?></td>
-                                <td style="text-align: right; white-space: nowrap;"><?php echo formatMoney($stats['total_deposits'], 'USD'); ?></td>
-                                <td style="text-align: right; white-space: nowrap;"><?php echo formatMoney($stats['total_withdrawals'], 'USD'); ?></td>
-                                <td style="text-align: right; white-space: nowrap;"><?php echo formatMoney($stats['total_investments'], 'USD'); ?></td>
-                                <td style="text-align: right; white-space: nowrap;"><?php echo formatMoney($stats['total_commissions'], 'USD'); ?></td>
-                            </tr>
-                        <?php endfor; ?>
-                    </tbody>
-                    <tfoot class="table-dark">
-                        <tr>
-                            <th style="white-space: nowrap;">TOTAL</th>
-                            <th style="text-align: center;"><?php echo number_format($totalUsers); ?></th>
-                            <th style="text-align: right; white-space: nowrap;"><?php echo formatMoney($totalDeposits, 'USD'); ?></th>
-                            <th style="text-align: right; white-space: nowrap;"><?php echo formatMoney($totalWithdrawals, 'USD'); ?></th>
-                            <th style="text-align: right; white-space: nowrap;"><?php echo formatMoney($totalInvestments, 'USD'); ?></th>
-                            <th style="text-align: right; white-space: nowrap;"><?php echo formatMoney($totalCommissions, 'USD'); ?></th>
-                        </tr>
-                    </tfoot>
-                </table>
+            <!-- Cabeçalho da tabela -->
+            <div class="affiliates-stats-header">
+                <div class="stats-col stats-nivel">Nível</div>
+                <div class="stats-col stats-usuarios">Usuários</div>
+                <div class="stats-col stats-deposito">Total Depositado</div>
+                <div class="stats-col stats-saque">Total Sacado</div>
+                <div class="stats-col stats-investido">Total Investido</div>
             </div>
             
-            <!-- Indicador de scroll para mobile -->
-            <div class="d-block d-md-none">
-                <small class="text-muted d-flex align-items-center justify-content-center mt-2">
-                    <i class="fas fa-arrows-alt-h me-1"></i>
-                    Deslize horizontalmente para ver mais dados
-                </small>
+            <!-- Dados da tabela -->
+            <div class="affiliates-stats-body">
+                <?php 
+                $totalUsers = 0;
+                $totalDeposits = 0;
+                $totalWithdrawals = 0;
+                $totalInvestments = 0;
+                $totalCommissions = 0;
+                
+                for ($level = 1; $level <= 10; $level++): 
+                    $stats = $affiliateStats[$level] ?? [
+                        'total_users' => 0,
+                        'total_deposits' => 0,
+                        'total_withdrawals' => 0,
+                        'total_investments' => 0,
+                        'total_commissions' => 0
+                    ];
+                    
+                    $totalUsers += $stats['total_users'];
+                    $totalDeposits += $stats['total_deposits'];
+                    $totalWithdrawals += $stats['total_withdrawals'];
+                    $totalInvestments += $stats['total_investments'];
+                    $totalCommissions += $stats['total_commissions'];
+                ?>
+                    <div class="stats-row <?php echo $stats['total_users'] > 0 ? '' : 'text-muted'; ?>">
+                        <div class="stats-col stats-nivel"><strong>Nível <?php echo $level; ?></strong></div>
+                        <div class="stats-col stats-usuarios"><?php echo number_format($stats['total_users']); ?></div>
+                        <div class="stats-col stats-deposito"><?php echo formatMoney($stats['total_deposits'], 'USD'); ?></div>
+                        <div class="stats-col stats-saque"><?php echo formatMoney($stats['total_withdrawals'], 'USD'); ?></div>
+                        <div class="stats-col stats-investido"><?php echo formatMoney($stats['total_investments'], 'USD'); ?></div>
+                    </div>
+                <?php endfor; ?>
+            </div>
+            
+            <!-- Total -->
+            <div class="affiliates-stats-footer">
+                <div class="stats-col stats-nivel"><strong>TOTAL</strong></div>
+                <div class="stats-col stats-usuarios"><strong><?php echo number_format($totalUsers); ?></strong></div>
+                <div class="stats-col stats-deposito"><strong><?php echo formatMoney($totalDeposits, 'USD'); ?></strong></div>
+                <div class="stats-col stats-saque"><strong><?php echo formatMoney($totalWithdrawals, 'USD'); ?></strong></div>
+                <div class="stats-col stats-investido"><strong><?php echo formatMoney($totalInvestments, 'USD'); ?></strong></div>
             </div>
         </div>
     </div>
@@ -297,6 +283,88 @@ include 'includes/header.php';
     margin-left: 30px;
     border-left: 2px dashed #dee2e6;
     padding-left: 20px;
+}
+
+/* Estilos para a tabela de estatísticas - Layout igual à imagem */
+.affiliates-stats-header,
+.stats-row,
+.affiliates-stats-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+    align-items: center;
+}
+
+.affiliates-stats-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+}
+
+.stats-row {
+    background: white;
+    transition: background-color 0.2s ease;
+}
+
+.stats-row:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+}
+
+.affiliates-stats-footer {
+    background: #343a40;
+    color: white;
+    font-weight: 600;
+    border-radius: 0 0 8px 8px;
+    border-bottom: none;
+    margin-top: 0;
+}
+
+.stats-col {
+    padding: 0.25rem;
+    text-align: center;
+}
+
+.stats-nivel {
+    text-align: left !important;
+}
+
+.stats-usuarios {
+    text-align: center !important;
+}
+
+.stats-deposito,
+.stats-saque,
+.stats-investido {
+    text-align: right !important;
+}
+
+/* Responsividade - mantém o mesmo layout em todas as telas */
+@media (max-width: 768px) {
+    .affiliates-stats-header,
+    .stats-row,
+    .affiliates-stats-footer {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        gap: 0.25rem;
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+    }
+    
+    .stats-col {
+        padding: 0.125rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .affiliates-stats-header,
+    .stats-row,
+    .affiliates-stats-footer {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.2rem;
+    }
 }
 </style>
 
