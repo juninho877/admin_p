@@ -127,20 +127,6 @@ function logAction($action, $details = '', $userId = null) {
         // Não propaga o erro para não quebrar a operação principal
     }
 }
-    
-    if (!$userId && isset($_SESSION['admin_id'])) {
-        $userId = $_SESSION['admin_id'];
-    }
-    
-    $sql = "INSERT INTO admin_logs (admin_id, action, details, ip_address, created_at) 
-            VALUES (?, ?, ?, ?, NOW())";
-    
-    try {
-        $db->query($sql, [$userId, $action, $details, $_SERVER['REMOTE_ADDR']]);
-    } catch (Exception $e) {
-        error_log("Error logging action: " . $e->getMessage());
-    }
-}
 
 /**
  * Envia notificação
