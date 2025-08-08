@@ -138,30 +138,30 @@ include 'includes/header.php';
                     </thead>
                     <tbody>
                         <?php foreach ($withdrawals as $withdrawal): ?>
-                            <tr>
-                                <td><?php echo $withdrawal['id']; ?></td>
-                                <td>
+                            <tr class="responsive-table-row">
+                                <td data-label="ID"><?php echo $withdrawal['id']; ?></td>
+                                <td data-label="Usuário">
                                     <div>
                                         <div class="fw-bold"><?php echo escape($withdrawal['user_name']); ?></div>
                                         <small class="text-muted"><?php echo escape($withdrawal['user_email']); ?></small>
                                     </div>
                                 </td>
-                                <td>
+                                <td data-label="Valor">
                                     <span class="fw-bold text-danger">
                                         <?php echo formatMoney($withdrawal['valor'], 'USD'); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Tipo">
                                     <span class="badge bg-info">
                                         <?php echo strtoupper($withdrawal['tipo']); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Destino">
                                     <small class="text-muted">
                                         <?php echo escape(substr($withdrawal['endereco_carteira'] ?? 'N/A', 0, 20)) . '...'; ?>
                                     </small>
                                 </td>
-                                <td>
+                                <td data-label="Status">
                                     <?php
                                     $statusText = '';
                                     $badgeClass = match($withdrawal['status']) {
@@ -187,10 +187,10 @@ include 'includes/header.php';
                                         <?php echo $statusText; ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Data">
                                     <small><?php echo formatDate($withdrawal['created_at']); ?></small>
                                 </td>
-                                <td>
+                                <td data-label="Ações">
                                     <div class="btn-group" role="group">
                                         <button class="btn btn-sm btn-outline-primary" 
                                                 onclick="showWithdrawalModal(<?php echo htmlspecialchars(json_encode($withdrawal)); ?>)"

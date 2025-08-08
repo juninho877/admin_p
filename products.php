@@ -163,9 +163,9 @@ include 'includes/header.php';
                     </thead>
                     <tbody>
                         <?php foreach ($products as $product): ?>
-                            <tr>
-                                <td><?php echo $product['id']; ?></td>
-                                <td>
+                            <tr class="responsive-table-row">
+                                <td data-label="ID"><?php echo $product['id']; ?></td>
+                                <td data-label="Nome">
                                     <div class="d-flex align-items-center">
                                         <?php if ($product['avatar_url']): ?>
                                             <img src="<?php echo escape($product['avatar_url']); ?>" 
@@ -180,7 +180,7 @@ include 'includes/header.php';
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td data-label="Comportamento">
                                     <?php
                                     $comportamentoBadge = match($product['comportamento']) {
                                         'conservador' => 'bg-success',
@@ -193,17 +193,17 @@ include 'includes/header.php';
                                         <?php echo ucfirst($product['comportamento']); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Investimentos Ativos">
                                     <span class="badge bg-info">
                                         <?php echo $product['active_investments']; ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Total Investido">
                                     <span class="fw-bold text-success">
                                         <?php echo formatMoney($product['total_invested'], 'USD'); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Status">
                                     <?php
                                     $statusBadge = $product['ativo'] ? 'bg-success' : 'bg-danger';
                                     $statusText = $product['ativo'] ? 'Ativo' : 'Inativo';
@@ -212,10 +212,10 @@ include 'includes/header.php';
                                         <?php echo $statusText; ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Data Criação">
                                     <small><?php echo formatDate($product['created_at']); ?></small>
                                 </td>
-                                <td>
+                                <td data-label="Ações">
                                     <div class="btn-group" role="group">
                                         <a href="product_detail.php?id=<?php echo $product['id']; ?>" 
                                            class="btn btn-sm btn-outline-primary" 

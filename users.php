@@ -127,9 +127,9 @@ include 'includes/header.php';
                     </thead>
                     <tbody>
                         <?php foreach ($users as $user): ?>
-                            <tr>
-                                <td><?php echo $user['id']; ?></td>
-                                <td>
+                            <tr class="responsive-table-row">
+                                <td data-label="ID"><?php echo $user['id']; ?></td>
+                                <td data-label="Nome">
                                     <div class="d-flex align-items-center">
                                         <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
                                             <i class="fas fa-user text-white"></i>
@@ -142,9 +142,9 @@ include 'includes/header.php';
                                         </div>
                                     </div>
                                 </td>
-                                <td><?php echo escape($user['email']); ?></td>
-                                <td><?php echo $user['cpf'] ? escape($user['cpf']) : '-'; ?></td>
-                                <td>
+                                <td data-label="Email"><?php echo escape($user['email']); ?></td>
+                                <td data-label="CPF"><?php echo $user['cpf'] ? escape($user['cpf']) : '-'; ?></td>
+                                <td data-label="Status">
                                     <?php
                                     $badgeClass = $user['status'] === 'ativo' ? 'bg-success' : 'bg-danger';
                                     ?>
@@ -152,20 +152,20 @@ include 'includes/header.php';
                                         <?php echo ucfirst($user['status']); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Saldo">
                                     <span class="fw-bold text-success">
                                         <?php echo formatMoney($user['saldo_carteira'] ?? 0, 'USD'); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Investimentos">
                                     <span class="badge bg-info">
                                         <?php echo $user['investimentos_ativos']; ?> ativos
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Cadastro">
                                     <small><?php echo formatDate($user['created_at']); ?></small>
                                 </td>
-                                <td>
+                                <td data-label="Ações">
                                     <div class="btn-group" role="group">
                                         <a href="user_detail.php?id=<?php echo $user['id']; ?>" 
                                            class="btn btn-sm btn-outline-primary" 

@@ -139,15 +139,15 @@ include 'includes/header.php';
                     </thead>
                     <tbody>
                         <?php foreach ($deposits as $deposit): ?>
-                            <tr>
-                                <td><?php echo $deposit['id']; ?></td>
-                                <td>
+                            <tr class="responsive-table-row">
+                                <td data-label="ID"><?php echo $deposit['id']; ?></td>
+                                <td data-label="Usuário">
                                     <div>
                                         <div class="fw-bold"><?php echo escape($deposit['user_name']); ?></div>
                                         <small class="text-muted"><?php echo escape($deposit['user_email']); ?></small>
                                     </div>
                                 </td>
-                                <td>
+                                <td data-label="Valor">
                                     <span class="fw-bold text-success">
                                         <?php echo formatMoney($deposit['valor_usd'], 'USD'); ?>
                                     </span>
@@ -155,15 +155,15 @@ include 'includes/header.php';
                                         <br><small class="text-muted"><?php echo formatMoney($deposit['valor_brl'], 'BRL'); ?></small>
                                     <?php endif; ?>
                                 </td>
-                                <td>
+                                <td data-label="Tipo">
                                     <span class="badge bg-info">
                                         <?php echo strtoupper($deposit['tipo']); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="TXID">
                                     <code class="small"><?php echo escape(substr($deposit['txid'], 0, 20)) . '...'; ?></code>
                                 </td>
-                                <td>
+                                <td data-label="Status">
                                     <?php
                                     $badgeClass = match($deposit['status']) {
                                         'confirmado' => 'bg-success',
@@ -176,10 +176,10 @@ include 'includes/header.php';
                                         <?php echo ucfirst($deposit['status']); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td data-label="Data">
                                     <small><?php echo formatDate($deposit['created_at']); ?></small>
                                 </td>
-                                <td>
+                                <td data-label="Ações">
                                     <div class="btn-group" role="group">
                                         <button class="btn btn-sm btn-outline-primary" 
                                                 onclick="showDepositModal(<?php echo htmlspecialchars(json_encode($deposit)); ?>)"

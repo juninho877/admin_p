@@ -308,15 +308,19 @@
            RESPONSIVE TABLES
            ========================================================================== */
         
+        /* Desktop table styles */
         .table-responsive {
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--box-shadow);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         .table {
             margin-bottom: 0;
             font-size: var(--font-size-sm);
+            min-width: 800px; /* Ensure minimum width for desktop */
         }
         
         .table thead th {
@@ -337,6 +341,132 @@
         
         .table tbody tr:hover {
             background-color: rgba(102, 126, 234, 0.05);
+        }
+        
+        /* Mobile responsive table styles */
+        @media (max-width: 768px) {
+            .table-responsive {
+                overflow: visible;
+                box-shadow: none;
+            }
+            
+            .table {
+                min-width: auto;
+                border: 0;
+            }
+            
+            .table thead {
+                display: none;
+            }
+            
+            .table tbody tr.responsive-table-row {
+                display: block;
+                border: 1px solid #dee2e6;
+                border-radius: var(--border-radius);
+                margin-bottom: var(--spacing-md);
+                padding: var(--spacing-md);
+                background: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            
+            .table tbody tr.responsive-table-row:hover {
+                background: white;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+            
+            .table tbody td {
+                display: block;
+                text-align: left !important;
+                border: none;
+                padding: var(--spacing-sm) 0;
+                position: relative;
+                padding-left: 35%;
+                word-wrap: break-word;
+            }
+            
+            .table tbody td:before {
+                content: attr(data-label) ": ";
+                position: absolute;
+                left: 0;
+                width: 30%;
+                font-weight: 600;
+                color: var(--dark-color);
+                text-transform: uppercase;
+                font-size: var(--font-size-xs);
+                letter-spacing: 0.5px;
+            }
+            
+            .table tbody td:first-child {
+                border-top: none;
+                font-weight: 700;
+                color: var(--primary-color);
+            }
+            
+            .table tbody td:first-child:before {
+                color: var(--primary-color);
+            }
+            
+            /* Special handling for action buttons */
+            .table tbody td[data-label="Ações"] {
+                padding-left: 0;
+                text-align: center !important;
+                border-top: 1px solid #e9ecef;
+                margin-top: var(--spacing-sm);
+                padding-top: var(--spacing-md);
+            }
+            
+            .table tbody td[data-label="Ações"]:before {
+                display: none;
+            }
+            
+            .table tbody td[data-label="Ações"] .btn-group {
+                display: flex;
+                justify-content: center;
+                gap: var(--spacing-xs);
+            }
+            
+            .table tbody td[data-label="Ações"] .btn {
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            /* Badge and status styling in mobile */
+            .table tbody td .badge {
+                display: inline-block;
+                margin-top: 2px;
+            }
+            
+            /* Avatar styling in mobile */
+            .table tbody td .d-flex.align-items-center {
+                display: block !important;
+            }
+            
+            .table tbody td .avatar-sm {
+                display: inline-block;
+                margin-right: var(--spacing-sm);
+                margin-bottom: var(--spacing-xs);
+            }
+        }
+        
+        /* Tablet responsive adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .table {
+                font-size: var(--font-size-xs);
+                min-width: 700px;
+            }
+            
+            .table thead th,
+            .table tbody td {
+                padding: var(--spacing-sm);
+            }
+            
+            .table tbody td .btn {
+                padding: 0.25rem 0.5rem;
+                font-size: var(--font-size-xs);
+            }
         }
         
         /* ==========================================================================
