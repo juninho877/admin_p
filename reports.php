@@ -289,7 +289,7 @@ include 'includes/header.php';
     </div>
 
     <!-- Gráfico de Performance -->
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">
                 <i class="fas fa-chart-area me-2"></i>
@@ -297,7 +297,9 @@ include 'includes/header.php';
             </h5>
         </div>
         <div class="card-body">
-            <canvas id="performanceChart" height="100"></canvas>
+            <div style="position: relative; height: 400px;">
+                <canvas id="performanceChart"></canvas>
+            </div>
         </div>
     </div>
 
@@ -316,60 +318,72 @@ include 'includes/header.php';
 
 <script>
 <?php if ($report): ?>
-// Performance Chart
-const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-const performanceChart = new Chart(performanceCtx, {
-    type: 'bar',
-    data: {
-        labels: ['Depósitos', 'Saques', 'Investimentos', 'Comissões'],
-        datasets: [{
-            label: 'Valores (USD)',
-            data: [
-                <?php echo $report['deposits']['confirmed_amount']; ?>,
-                <?php echo $report['withdrawals']['approved_amount']; ?>,
-                <?php echo $report['investments']['active_amount']; ?>,
-                <?php echo $report['commissions']['total_commission_amount']; ?>
-            ],
-            backgroundColor: [
-                'rgba(40, 167, 69, 0.8)',
-                'rgba(220, 53, 69, 0.8)',
-                'rgba(255, 193, 7, 0.8)',
-                'rgba(102, 126, 234, 0.8)'
-            ],
-            borderColor: [
-                'rgba(40, 167, 69, 1)',
-                'rgba(220, 53, 69, 1)',
-                'rgba(255, 193, 7, 1)',
-                'rgba(102, 126, 234, 1)'
-            ],
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: function(value) {
-                        return '$' + value.toLocaleString();
-                    }
-                }
-            }
-        },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
-                    }
-                }
+// Aguardar o DOM carregar completamente
+document.addEventListener('DOMContentLoaded', function() {
+    // Performance Chart
+    const performanceCtx = document.getElementById('performanceChart');
+    
+    if (performanceCtx) {
+        const performanceChart = new Chart(performanceCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Depósitos', 'Saques', 'Investimentos', 'Comissões'],
+                datasets: [{
+                    label: 'Valores (USD)',
+                    data: [
+                        <?php echo floatval($report['deposits']['confirmed_amount'] ?? 0); ?>,
+                        <?php echo floatval($report['withdrawals']['approved_amount'] ?? 0); ?>,
+                        <?php echo floatval($report['investments']['active_amount'] ?? 0); ?>,
+                        <?php echo floatval($report['commissions']['total_commission_amount'] ?? 0); ?>
+                    ],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(220, 53, 69, 0.8)',
+                        'rgba(255, 193, 7, 0.8)',
+                        'rgba(102, 126, 234, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(255, 193, 7, 1)',
+                        'rgba(102, 126, 234, 1)'
+                    ],
+                    borderWidth: 2
+                }]
             },
-            legend: {
-                display: false
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Performance Financeira do Período'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
             }
-        }
+        });
+    } else {
+        console.error('Canvas element not found: performanceChart');
     }
 });
 
@@ -381,6 +395,9 @@ function exportReport() {
         icon: 'info'
     });
 }
+<?php else: ?>
+// Sem dados para exibir gráfico
+console.log('Nenhum relatório gerado ainda');
 <?php endif; ?>
 </script>
 
