@@ -129,10 +129,10 @@ include 'includes/header.php';
                             <th>ID</th>
                             <th>Usuário</th>
                             <th>Valor</th>
-                            <th>Tipo</th>
-                            <th>Destino</th>
+                            <th class="d-none d-sm-table-cell">Tipo</th>
+                            <th class="d-none d-lg-table-cell">Destino</th>
                             <th>Status</th>
-                            <th>Data</th>
+                            <th class="d-none d-md-table-cell">Data</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -151,12 +151,12 @@ include 'includes/header.php';
                                         <?php echo formatMoney($withdrawal['valor'], 'USD'); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-sm-table-cell">
                                     <span class="badge bg-info">
                                         <?php echo strtoupper($withdrawal['tipo']); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <small class="text-muted">
                                         <?php echo escape(substr($withdrawal['endereco_carteira'] ?? 'N/A', 0, 20)) . '...'; ?>
                                     </small>
@@ -187,11 +187,11 @@ include 'includes/header.php';
                                         <?php echo $statusText; ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <small><?php echo formatDate($withdrawal['created_at']); ?></small>
                                 </td>
                                 <td>
-                                    <div class="btn-group" role="group">
+                                    <div class="btn-group btn-group-sm" role="group">
                                         <button class="btn btn-sm btn-outline-primary" 
                                                 onclick="showWithdrawalModal(<?php echo htmlspecialchars(json_encode($withdrawal)); ?>)"
                                                 data-bs-toggle="tooltip" title="Ver Detalhes">

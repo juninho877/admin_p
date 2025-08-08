@@ -46,7 +46,7 @@ include 'includes/header.php';
 
 <!-- Stats Cards -->
 <div class="row mb-4">
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 mb-3 mb-xl-4">
         <div class="stats-card">
             <div class="stats-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                 <i class="fas fa-users"></i>
@@ -60,7 +60,7 @@ include 'includes/header.php';
         </div>
     </div>
     
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 mb-3 mb-xl-4">
         <div class="stats-card">
             <div class="stats-icon" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
                 <i class="fas fa-arrow-down"></i>
@@ -74,7 +74,7 @@ include 'includes/header.php';
         </div>
     </div>
     
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 mb-3 mb-xl-4">
         <div class="stats-card">
             <div class="stats-icon" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);">
                 <i class="fas fa-arrow-up"></i>
@@ -88,7 +88,7 @@ include 'includes/header.php';
         </div>
     </div>
     
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 mb-3 mb-xl-4">
         <div class="stats-card">
             <div class="stats-icon" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
                 <i class="fas fa-wallet"></i>
@@ -105,7 +105,7 @@ include 'includes/header.php';
 
 <!-- Recent Activity -->
 <div class="row">
-    <div class="col-xl-6 mb-4">
+    <div class="col-xl-6 col-lg-12 mb-4">
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">
@@ -159,7 +159,7 @@ include 'includes/header.php';
         </div>
     </div>
     
-    <div class="col-xl-6 mb-4">
+    <div class="col-xl-6 col-lg-12 mb-4">
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0">

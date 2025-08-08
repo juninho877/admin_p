@@ -130,10 +130,10 @@ include 'includes/header.php';
                             <th>ID</th>
                             <th>Usuário</th>
                             <th>Valor</th>
-                            <th>Tipo</th>
-                            <th>TXID</th>
+                            <th class="d-none d-sm-table-cell">Tipo</th>
+                            <th class="d-none d-lg-table-cell">TXID</th>
                             <th>Status</th>
-                            <th>Data</th>
+                            <th class="d-none d-md-table-cell">Data</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -155,12 +155,12 @@ include 'includes/header.php';
                                         <br><small class="text-muted"><?php echo formatMoney($deposit['valor_brl'], 'BRL'); ?></small>
                                     <?php endif; ?>
                                 </td>
-                                <td>
+                                <td class="d-none d-sm-table-cell">
                                     <span class="badge bg-info">
                                         <?php echo strtoupper($deposit['tipo']); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <code class="small"><?php echo escape(substr($deposit['txid'], 0, 20)) . '...'; ?></code>
                                 </td>
                                 <td>
@@ -176,11 +176,11 @@ include 'includes/header.php';
                                         <?php echo ucfirst($deposit['status']); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <small><?php echo formatDate($deposit['created_at']); ?></small>
                                 </td>
                                 <td>
-                                    <div class="btn-group" role="group">
+                                    <div class="btn-group btn-group-sm" role="group">
                                         <button class="btn btn-sm btn-outline-primary" 
                                                 onclick="showDepositModal(<?php echo htmlspecialchars(json_encode($deposit)); ?>)"
                                                 data-bs-toggle="tooltip" title="Ver Detalhes">

@@ -117,11 +117,11 @@ include 'includes/header.php';
                             <th>ID</th>
                             <th>Nome</th>
                             <th>Email</th>
-                            <th>CPF</th>
-                            <th>Status</th>
+                            <th class="d-none d-md-table-cell">CPF</th>
+                            <th class="d-none d-sm-table-cell">Status</th>
                             <th>Saldo</th>
-                            <th>Investimentos</th>
-                            <th>Cadastro</th>
+                            <th class="d-none d-lg-table-cell">Investimentos</th>
+                            <th class="d-none d-lg-table-cell">Cadastro</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -143,8 +143,8 @@ include 'includes/header.php';
                                     </div>
                                 </td>
                                 <td><?php echo escape($user['email']); ?></td>
-                                <td><?php echo $user['cpf'] ? escape($user['cpf']) : '-'; ?></td>
-                                <td>
+                                <td class="d-none d-md-table-cell"><?php echo $user['cpf'] ? escape($user['cpf']) : '-'; ?></td>
+                                <td class="d-none d-sm-table-cell">
                                     <?php
                                     $badgeClass = $user['status'] === 'ativo' ? 'bg-success' : 'bg-danger';
                                     ?>
@@ -157,16 +157,16 @@ include 'includes/header.php';
                                         <?php echo formatMoney($user['saldo_carteira'] ?? 0, 'USD'); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <span class="badge bg-info">
                                         <?php echo $user['investimentos_ativos']; ?> ativos
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <small><?php echo formatDate($user['created_at']); ?></small>
                                 </td>
                                 <td>
-                                    <div class="btn-group" role="group">
+                                    <div class="btn-group btn-group-sm" role="group">
                                         <a href="user_detail.php?id=<?php echo $user['id']; ?>" 
                                            class="btn btn-sm btn-outline-primary" 
                                            data-bs-toggle="tooltip" title="Ver Detalhes">
