@@ -5,18 +5,24 @@
 
 class Database {
     private $host = 'localhost';
-    private $db_name = 'sql_gtar_abit_be';
-    private $username = 'root';
-    private $password = '';
+    private $db_name = 'admin_tesaa';
+    private $username = 'admin_tesaa';
+    private $password = 'admin_tesaa';
     private $charset = 'utf8mb4';
     private $pdo;
     
     public function __construct() {
-        // Configurações do banco de dados
-        $this->host = 'localhost';
-        $this->db_name = 'admin_tesaa';
-        $this->username = 'admin_tesaa';
-        $this->password = 'admin_tesaa';
+        $this->connect();
+    }
+    
+    private function connect() {
+        try {
+            $dsn = "mysql:host={$this->host};dbname={$this->db_name};charset={$this->charset}";
+            $options = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+            ];
             
             $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
         } catch (PDOException $e) {
