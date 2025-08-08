@@ -103,37 +103,6 @@ include 'includes/header.php';
     </div>
 </div>
 
-<!-- Charts Row -->
-<div class="row mb-4">
-    <div class="col-xl-8 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-chart-line me-2"></i>
-                    Movimento Financeiro (Últimos 30 dias)
-                </h5>
-            </div>
-            <div class="card-body">
-                <canvas id="financialChart" height="100"></canvas>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-xl-4 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-user-plus me-2"></i>
-                    Crescimento de Usuários
-                </h5>
-            </div>
-            <div class="card-body">
-                <canvas id="userGrowthChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Recent Activity -->
 <div class="row">
     <div class="col-xl-6 mb-4">
@@ -237,78 +206,6 @@ include 'includes/header.php';
 </div>
 
 <script>
-// Financial Chart
-const financialCtx = document.getElementById('financialChart').getContext('2d');
-const financialChart = new Chart(financialCtx, {
-    type: 'line',
-    data: {
-        labels: <?php echo json_encode(array_column($financialChart, 'date')); ?>,
-        datasets: [{
-            label: 'Depósitos',
-            data: <?php echo json_encode(array_column($financialChart, 'deposits')); ?>,
-            borderColor: '#28a745',
-            backgroundColor: 'rgba(40, 167, 69, 0.1)',
-            tension: 0.4
-        }, {
-            label: 'Saques',
-            data: <?php echo json_encode(array_column($financialChart, 'withdrawals')); ?>,
-            borderColor: '#dc3545',
-            backgroundColor: 'rgba(220, 53, 69, 0.1)',
-            tension: 0.4
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: function(value) {
-                        return '$' + value.toLocaleString();
-                    }
-                }
-            }
-        },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
-                    }
-                }
-            }
-        }
-    }
-});
-
-// User Growth Chart
-const userCtx = document.getElementById('userGrowthChart').getContext('2d');
-const userGrowthChart = new Chart(userCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Usuários Ativos', 'Usuários Bloqueados'],
-        datasets: [{
-            data: [
-                <?php echo $stats['users']['active_users']; ?>,
-                <?php echo $stats['users']['total_users'] - $stats['users']['active_users']; ?>
-            ],
-            backgroundColor: [
-                '#28a745',
-                '#dc3545'
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom'
-            }
-        }
-    }
-});
 </script>
 
 <?php include 'includes/footer.php'; ?>
