@@ -171,6 +171,14 @@
             border-radius: 15px 15px 0 0;
         }
         
+        .card-header-tabs .nav-link {
+            color: white !important;
+        }
+        
+        .card-header-tabs .nav-link.active {
+            color: var(--primary-color) !important;
+        }
+        
         @media (max-width: 768px) {
             .sidebar {
                 width: 70px;
