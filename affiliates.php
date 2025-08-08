@@ -82,6 +82,7 @@ include 'includes/header.php';
                                 <div>
                                     <h6 class="mb-1"><?php echo escape($user['name']); ?></h6>
                                     <small class="text-muted"><?php echo escape($user['email']); ?></small>
+                                    <br><small class="text-info">Indicado por: <?php echo $user['codigo_indicador'] ? escape($user['codigo_indicador']) : 'Nenhum'; ?></small>
                                 </div>
                                 <small class="text-muted">
                                     Código: <?php echo escape($user['codigo_indicacao']); ?>
