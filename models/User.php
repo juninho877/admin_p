@@ -221,6 +221,12 @@ class User {
             if (!$wallet) {
                 // Cria carteira se não existir
                 $this->db->query("INSERT INTO carteiras (user_id, saldo, created_at) VALUES (?, 0, NOW())", [$userId]);
+                $wallet = ['saldo' => 0];
+            }
+            
+            // Verifica saldo suficiente para subtração
+            if ($operation === 'subtract' && $wallet['saldo'] < $amount) {
+                throw new Exception('Saldo insuficiente');
             }
             
             // Atualiza saldo
@@ -246,6 +252,7 @@ class User {
             
         } catch (Exception $e) {
             $this->db->getConnection()->rollback();
+            error_log("updateWalletBalance error: " . $e->getMessage());
             throw $e;
         }
     }

@@ -319,6 +319,20 @@ function showWalletModal(userId, userName, currentBalance) {
 document.getElementById('walletForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
+    // Validação básica
+    const operation = document.getElementById('operation').value;
+    const amount = parseFloat(document.getElementById('amount').value);
+    
+    if (!operation) {
+        showError('Selecione uma operação');
+        return;
+    }
+    
+    if (!amount || amount <= 0) {
+        showError('Digite um valor válido');
+        return;
+    }
+    
     const formData = new FormData(this);
     
     fetch('ajax/update_wallet.php', {
@@ -329,12 +343,16 @@ document.getElementById('walletForm').addEventListener('submit', function(e) {
     .then(data => {
         if (data.success) {
             showSuccess(data.message);
+            // Fechar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('walletModal'));
+            modal.hide();
             setTimeout(() => location.reload(), 1500);
         } else {
             showError(data.message);
         }
     })
     .catch(error => {
+        console.error('Fetch error:', error);
         showError('Erro ao processar solicitação');
     });
 });

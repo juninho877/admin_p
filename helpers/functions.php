@@ -111,7 +111,22 @@ function generatePagination($currentPage, $totalPages, $baseUrl) {
  * Registra log de ação
  */
 function logAction($action, $details = '', $userId = null) {
-    $db = new Database();
+    try {
+        $db = new Database();
+        
+        if (!$userId && isset($_SESSION['admin_id'])) {
+            $userId = $_SESSION['admin_id'];
+        }
+        
+        $sql = "INSERT INTO admin_logs (admin_id, action, details, ip_address, created_at) 
+                VALUES (?, ?, ?, ?, NOW())";
+        
+        $db->query($sql, [$userId, $action, $details, $_SERVER['REMOTE_ADDR'] ?? 'unknown']);
+    } catch (Exception $e) {
+        error_log("Error logging action: " . $e->getMessage());
+        // Não propaga o erro para não quebrar a operação principal
+    }
+}
     
     if (!$userId && isset($_SESSION['admin_id'])) {
         $userId = $_SESSION['admin_id'];

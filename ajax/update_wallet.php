@@ -30,6 +30,14 @@ try {
         throw new Exception('Usuário não encontrado');
     }
     
+    // Verifica se há saldo suficiente para subtração
+    if ($operation === 'subtract') {
+        $currentBalance = $user['saldo_carteira'] ?? 0;
+        if ($currentBalance < $amount) {
+            throw new Exception('Saldo insuficiente para esta operação');
+        }
+    }
+    
     // Atualiza saldo
     $userModel->updateWalletBalance($userId, $amount, $operation);
     
@@ -45,6 +53,7 @@ try {
     ]);
     
 } catch (Exception $e) {
+    error_log("Wallet update error: " . $e->getMessage());
     echo json_encode([
         'success' => false,
         'message' => $e->getMessage()
