@@ -354,6 +354,7 @@ include 'includes/header.php';
                                                         'completed' => 'bg-success',
                                                         'pendente' => 'bg-warning',
                                                         'erro' => 'bg-danger',
+                                                        'failed' => 'bg-danger',
                                                         default => 'bg-secondary'
                                                     };
                                                     
@@ -361,8 +362,8 @@ include 'includes/header.php';
                                                         $statusText = 'Pago';
                                                     } elseif ($withdrawal['status'] === 'completed' && $withdrawal['tipo'] === 'pix') {
                                                         $statusText = 'Completed';
-                                                    } elseif ($withdrawal['status'] === 'erro') {
-                                                        $statusText = 'Rejeitado';
+                                                    } elseif ($withdrawal['status'] === 'erro' || $withdrawal['status'] === 'failed') {
+                                                        $statusText = 'Erro Interno';
                                                     } else {
                                                         $statusText = ucfirst($withdrawal['status']);
                                                     }

@@ -79,11 +79,10 @@ class Financial {
         
         // Filtros
         if (!empty($filters['status'])) {
-            // Mapear status da UI para status do banco
             if ($filters['status'] === 'aprovado') {
                 $where[] = "(s.status = 'pago' OR s.status = 'completed')";
-            } elseif ($filters['status'] === 'rejeitado') {
-                $where[] = "s.status = 'erro'";
+            } elseif ($filters['status'] === 'erro') {
+                $where[] = "(s.status = 'erro' OR s.status = 'failed')";
             } elseif ($filters['status'] === 'pendente') {
                 $where[] = "s.status = 'pendente'";
             }
@@ -204,37 +203,23 @@ class Financial {
             
             $oldStatus = $withdrawal['status'];
             
-            // Mapear status da UI para status do banco
+            // Mapear status da UI para status do banco baseado no tipo
             $dbStatus = $status;
             if ($status === 'aprovado') {
-                // Definir status baseado no tipo
                 if ($withdrawal['tipo'] === 'usdt') {
                     $dbStatus = 'pago';
                 } elseif ($withdrawal['tipo'] === 'pix') {
                     $dbStatus = 'completed';
                 }
-            } elseif ($status === 'rejeitado') {
-                $dbStatus = 'erro';
             }
+            // Nota: status 'erro' e 'failed' são apenas para erros internos do sistema
+            // Não há ação administrativa para "rejeitar" saques
             
             // Atualiza status
             $this->db->query(
                 "UPDATE solicitacoes_saque SET status = ?, updated_at = NOW() WHERE id = ?",
                 [$dbStatus, $id]
             );
-            
-            // Se rejeitado, reembolsa na carteira
-            if ($dbStatus === 'erro' && $oldStatus === 'pendente') {
-                $userModel = new User();
-                $userModel->updateWalletBalance($withdrawal['user_id'], $withdrawal['valor'], 'add');
-                
-                // Registra log
-                logAction(
-                    'WITHDRAWAL_REJECTED',
-                    "Saque #{$id} rejeitado - Valor: {$withdrawal['valor']} USD - Usuário: {$withdrawal['user_id']}",
-                    $adminId
-                );
-            }
             
             if ($status === 'aprovado') {
                 logAction(

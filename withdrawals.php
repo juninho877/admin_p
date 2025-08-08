@@ -75,7 +75,7 @@ include 'includes/header.php';
                     <option value="">Todos</option>
                     <option value="pendente" <?php echo $filters['status'] === 'pendente' ? 'selected' : ''; ?>>Pendente</option>
                     <option value="aprovado" <?php echo $filters['status'] === 'aprovado' ? 'selected' : ''; ?>>Aprovado</option>
-                    <option value="rejeitado" <?php echo $filters['status'] === 'rejeitado' ? 'selected' : ''; ?>>Rejeitado</option>
+                    <option value="erro" <?php echo $filters['status'] === 'erro' ? 'selected' : ''; ?>>Erro Interno</option>
                 </select>
             </div>
             
@@ -169,6 +169,7 @@ include 'includes/header.php';
                                         'completed' => 'bg-success',
                                         'pendente' => 'bg-warning',
                                         'erro' => 'bg-danger',
+                                        'failed' => 'bg-danger',
                                         default => 'bg-secondary'
                                     };
                                     
@@ -176,8 +177,8 @@ include 'includes/header.php';
                                         $statusText = 'Pago';
                                     } elseif ($withdrawal['status'] === 'completed' && $withdrawal['tipo'] === 'pix') {
                                         $statusText = 'Completed';
-                                    } elseif ($withdrawal['status'] === 'erro') {
-                                        $statusText = 'Rejeitado';
+                                    } elseif ($withdrawal['status'] === 'erro' || $withdrawal['status'] === 'failed') {
+                                        $statusText = 'Erro Interno';
                                     } else {
                                         $statusText = ucfirst($withdrawal['status']);
                                     }
@@ -201,11 +202,6 @@ include 'includes/header.php';
                                                     onclick="updateStatus(<?php echo $withdrawal['id']; ?>, 'aprovado')"
                                                     data-bs-toggle="tooltip" title="Aprovar">
                                                 <i class="fas fa-check"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" 
-                                                    onclick="updateStatus(<?php echo $withdrawal['id']; ?>, 'rejeitado')"
-                                                    data-bs-toggle="tooltip" title="Rejeitar">
-                                                <i class="fas fa-times"></i>
                                             </button>
                                         <?php endif; ?>
                                     </div>
@@ -308,7 +304,8 @@ function getStatusBadge(status, tipo) {
         'pago': '<span class="badge bg-success">Pago</span>',
         'completed': '<span class="badge bg-success">Completed</span>',
         'pendente': '<span class="badge bg-warning">Pendente</span>',
-        'erro': '<span class="badge bg-danger">Rejeitado</span>'
+        'erro': '<span class="badge bg-danger">Erro Interno</span>',
+        'failed': '<span class="badge bg-danger">Erro Interno</span>'
     };
     
     // Verificar se é um status específico baseado no tipo
@@ -323,8 +320,7 @@ function getStatusBadge(status, tipo) {
 
 function updateStatus(withdrawalId, status) {
     const messages = {
-        'aprovado': 'Tem certeza que deseja aprovar este saque?',
-        'rejeitado': 'Tem certeza que deseja rejeitar este saque? O valor será reembolsado na carteira do usuário.'
+        'aprovado': 'Tem certeza que deseja aprovar este saque?'
     };
     
     Swal.fire({
@@ -332,7 +328,7 @@ function updateStatus(withdrawalId, status) {
         text: messages[status],
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: status === 'aprovado' ? '#28a745' : '#dc3545',
+        confirmButtonColor: '#28a745',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Sim, confirmar!',
         cancelButtonText: 'Cancelar'
