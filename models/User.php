@@ -33,12 +33,12 @@ class User {
         }
         
         if (!empty($filters['date_from'])) {
-            $where[] = "created_at >= ?";
+            $where[] = "u.created_at >= ?";
             $params[] = $filters['date_from'] . ' 00:00:00';
         }
         
         if (!empty($filters['date_to'])) {
-            $where[] = "created_at <= ?";
+            $where[] = "u.created_at <= ?";
             $params[] = $filters['date_to'] . ' 23:59:59';
         }
         
