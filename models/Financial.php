@@ -79,8 +79,14 @@ class Financial {
         
         // Filtros
         if (!empty($filters['status'])) {
-            $where[] = "s.status = ?";
-            $params[] = $filters['status'];
+            // Mapear status da UI para status do banco
+            if ($filters['status'] === 'aprovado') {
+                $where[] = "(s.status = 'pago' OR s.status = 'completed')";
+            } elseif ($filters['status'] === 'rejeitado') {
+                $where[] = "s.status = 'erro'";
+            } elseif ($filters['status'] === 'pendente') {
+                $where[] = "s.status = 'pendente'";
+            }
         }
         
         if (!empty($filters['tipo'])) {
@@ -108,7 +114,7 @@ class Financial {
         $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
         
         $sql = "SELECT s.*, u.name as user_name, u.email as user_email
-                FROM saques s
+                FROM solicitacoes_saque s
                 JOIN users u ON u.id = s.user_id
                 {$whereClause}
                 ORDER BY s.created_at DESC
@@ -117,7 +123,7 @@ class Financial {
         $withdrawals = $this->db->fetchAll($sql, $params);
         
         // Count total
-        $countSql = "SELECT COUNT(*) as total FROM saques s JOIN users u ON u.id = s.user_id {$whereClause}";
+        $countSql = "SELECT COUNT(*) as total FROM solicitacoes_saque s JOIN users u ON u.id = s.user_id {$whereClause}";
         $total = $this->db->fetch($countSql, $params)['total'];
         
         return [
@@ -191,28 +197,41 @@ class Financial {
         
         try {
             // Busca saque
-            $withdrawal = $this->db->fetch("SELECT * FROM saques WHERE id = ?", [$id]);
+            $withdrawal = $this->db->fetch("SELECT * FROM solicitacoes_saque WHERE id = ?", [$id]);
             if (!$withdrawal) {
                 throw new Exception("Saque não encontrado");
             }
             
             $oldStatus = $withdrawal['status'];
             
+            // Mapear status da UI para status do banco
+            $dbStatus = $status;
+            if ($status === 'aprovado') {
+                // Definir status baseado no tipo
+                if ($withdrawal['tipo'] === 'usdt') {
+                    $dbStatus = 'pago';
+                } elseif ($withdrawal['tipo'] === 'pix') {
+                    $dbStatus = 'completed';
+                }
+            } elseif ($status === 'rejeitado') {
+                $dbStatus = 'erro';
+            }
+            
             // Atualiza status
             $this->db->query(
-                "UPDATE saques SET status = ?, updated_at = NOW() WHERE id = ?",
-                [$status, $id]
+                "UPDATE solicitacoes_saque SET status = ?, updated_at = NOW() WHERE id = ?",
+                [$dbStatus, $id]
             );
             
             // Se rejeitado, reembolsa na carteira
-            if ($status === 'rejeitado' && $oldStatus === 'pendente') {
+            if ($dbStatus === 'erro' && $oldStatus === 'pendente') {
                 $userModel = new User();
-                $userModel->updateWalletBalance($withdrawal['user_id'], $withdrawal['valor_usd'], 'add');
+                $userModel->updateWalletBalance($withdrawal['user_id'], $withdrawal['valor'], 'add');
                 
                 // Registra log
                 logAction(
                     'WITHDRAWAL_REJECTED',
-                    "Saque #{$id} rejeitado - Valor: {$withdrawal['valor_usd']} USD - Usuário: {$withdrawal['user_id']}",
+                    "Saque #{$id} rejeitado - Valor: {$withdrawal['valor']} USD - Usuário: {$withdrawal['user_id']}",
                     $adminId
                 );
             }
@@ -220,7 +239,7 @@ class Financial {
             if ($status === 'aprovado') {
                 logAction(
                     'WITHDRAWAL_APPROVED',
-                    "Saque #{$id} aprovado - Valor: {$withdrawal['valor_usd']} USD - Usuário: {$withdrawal['user_id']}",
+                    "Saque #{$id} aprovado - Valor: {$withdrawal['valor']} USD - Usuário: {$withdrawal['user_id']}",
                     $adminId
                 );
             }
@@ -254,10 +273,10 @@ class Financial {
         // Saques
         $withdrawalsSql = "SELECT 
                               COUNT(*) as total_withdrawals,
-                              COALESCE(SUM(valor_usd), 0) as total_withdrawal_amount,
-                              COUNT(CASE WHEN status = 'aprovado' THEN 1 END) as approved_withdrawals,
-                              COALESCE(SUM(CASE WHEN status = 'aprovado' THEN valor_usd END), 0) as approved_amount
-                           FROM saques 
+                              COALESCE(SUM(valor), 0) as total_withdrawal_amount,
+                              COUNT(CASE WHEN status IN ('pago', 'completed') THEN 1 END) as approved_withdrawals,
+                              COALESCE(SUM(CASE WHEN status IN ('pago', 'completed') THEN valor END), 0) as approved_amount
+                           FROM solicitacoes_saque 
                            WHERE created_at BETWEEN ? AND ?";
         
         $withdrawals = $this->db->fetch($withdrawalsSql, $params);
@@ -311,7 +330,7 @@ class Financial {
         $financialStats = $this->db->fetch("
             SELECT 
                 (SELECT COALESCE(SUM(valor_usd), 0) FROM depositos WHERE status = 'confirmado') as total_deposits,
-                (SELECT COALESCE(SUM(valor_usd), 0) FROM saques WHERE status = 'aprovado') as total_withdrawals,
+                (SELECT COALESCE(SUM(valor), 0) FROM solicitacoes_saque WHERE status IN ('pago', 'completed')) as total_withdrawals,
                 (SELECT COALESCE(SUM(valor_investido), 0) FROM usuario_produtos WHERE status = 'ativo') as total_investments,
                 (SELECT COALESCE(SUM(saldo), 0) FROM carteiras) as total_balance
         ");
@@ -320,7 +339,7 @@ class Financial {
         $pendingStats = $this->db->fetch("
             SELECT 
                 (SELECT COUNT(*) FROM depositos WHERE status = 'pendente') as pending_deposits,
-                (SELECT COUNT(*) FROM saques WHERE status = 'pendente') as pending_withdrawals
+                (SELECT COUNT(*) FROM solicitacoes_saque WHERE status = 'pendente') as pending_withdrawals
         ");
         
         return [

@@ -31,7 +31,7 @@ $deposits = $db->fetchAll(
 );
 
 $withdrawals = $db->fetchAll(
-    "SELECT * FROM saques WHERE user_id = ? ORDER BY created_at DESC LIMIT 10",
+    "SELECT * FROM solicitacoes_saque WHERE user_id = ? ORDER BY created_at DESC LIMIT 10",
     [$userId]
 );
 
@@ -154,7 +154,7 @@ include 'includes/header.php';
                     </div>
                     <h5 class="mb-1">
                         <?php 
-                        $totalWithdrawals = array_sum(array_column(array_filter($withdrawals, fn($w) => $w['status'] === 'aprovado'), 'valor_usd'));
+                        $totalWithdrawals = array_sum(array_column(array_filter($withdrawals, fn($w) => in_array($w['status'], ['pago', 'completed'])), 'valor'));
                         echo formatMoney($totalWithdrawals, 'USD'); 
                         ?>
                     </h5>
@@ -340,7 +340,7 @@ include 'includes/header.php';
                                         <?php foreach ($withdrawals as $withdrawal): ?>
                                             <tr>
                                                 <td><?php echo formatDate($withdrawal['created_at']); ?></td>
-                                                <td><?php echo formatMoney($withdrawal['valor_usd'], 'USD'); ?></td>
+                                                <td><?php echo formatMoney($withdrawal['valor'], 'USD'); ?></td>
                                                 <td>
                                                     <span class="badge bg-info">
                                                         <?php echo strtoupper($withdrawal['tipo']); ?>
@@ -348,26 +348,32 @@ include 'includes/header.php';
                                                 </td>
                                                 <td>
                                                     <?php
+                                                    $statusText = '';
                                                     $badgeClass = match($withdrawal['status']) {
-                                                        'aprovado' => 'bg-success',
+                                                        'pago' => 'bg-success',
+                                                        'completed' => 'bg-success',
                                                         'pendente' => 'bg-warning',
-                                                        'rejeitado' => 'bg-danger',
+                                                        'erro' => 'bg-danger',
                                                         default => 'bg-secondary'
                                                     };
+                                                    
+                                                    if ($withdrawal['status'] === 'pago' && $withdrawal['tipo'] === 'usdt') {
+                                                        $statusText = 'Pago';
+                                                    } elseif ($withdrawal['status'] === 'completed' && $withdrawal['tipo'] === 'pix') {
+                                                        $statusText = 'Completed';
+                                                    } elseif ($withdrawal['status'] === 'erro') {
+                                                        $statusText = 'Rejeitado';
+                                                    } else {
+                                                        $statusText = ucfirst($withdrawal['status']);
+                                                    }
                                                     ?>
                                                     <span class="badge <?php echo $badgeClass; ?>">
-                                                        <?php echo ucfirst($withdrawal['status']); ?>
+                                                        <?php echo $statusText; ?>
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <small class="text-muted">
-                                                        <?php 
-                                                        if ($withdrawal['tipo'] === 'pix') {
-                                                            echo escape($withdrawal['chave_pix'] ?? 'N/A');
-                                                        } else {
-                                                            echo escape(substr($withdrawal['endereco'] ?? 'N/A', 0, 20)) . '...';
-                                                        }
-                                                        ?>
+                                                        <?php echo escape(substr($withdrawal['endereco_carteira'] ?? 'N/A', 0, 20)) . '...'; ?>
                                                     </small>
                                                 </td>
                                             </tr>

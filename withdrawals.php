@@ -148,11 +148,8 @@ include 'includes/header.php';
                                 </td>
                                 <td>
                                     <span class="fw-bold text-danger">
-                                        <?php echo formatMoney($withdrawal['valor_usd'], 'USD'); ?>
+                                        <?php echo formatMoney($withdrawal['valor'], 'USD'); ?>
                                     </span>
-                                    <?php if ($withdrawal['valor_brl']): ?>
-                                        <br><small class="text-muted"><?php echo formatMoney($withdrawal['valor_brl'], 'BRL'); ?></small>
-                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <span class="badge bg-info">
@@ -160,27 +157,33 @@ include 'includes/header.php';
                                     </span>
                                 </td>
                                 <td>
-                                    <?php if ($withdrawal['tipo'] === 'pix'): ?>
-                                        <small class="text-muted">
-                                            <?php echo escape($withdrawal['chave_pix'] ?? 'N/A'); ?>
-                                        </small>
-                                    <?php else: ?>
-                                        <small class="text-muted">
-                                            <?php echo escape(substr($withdrawal['endereco'] ?? 'N/A', 0, 20)) . '...'; ?>
-                                        </small>
-                                    <?php endif; ?>
+                                    <small class="text-muted">
+                                        <?php echo escape(substr($withdrawal['endereco_carteira'] ?? 'N/A', 0, 20)) . '...'; ?>
+                                    </small>
                                 </td>
                                 <td>
                                     <?php
+                                    $statusText = '';
                                     $badgeClass = match($withdrawal['status']) {
-                                        'aprovado' => 'bg-success',
+                                        'pago' => 'bg-success',
+                                        'completed' => 'bg-success',
                                         'pendente' => 'bg-warning',
-                                        'rejeitado' => 'bg-danger',
+                                        'erro' => 'bg-danger',
                                         default => 'bg-secondary'
                                     };
+                                    
+                                    if ($withdrawal['status'] === 'pago' && $withdrawal['tipo'] === 'usdt') {
+                                        $statusText = 'Pago';
+                                    } elseif ($withdrawal['status'] === 'completed' && $withdrawal['tipo'] === 'pix') {
+                                        $statusText = 'Completed';
+                                    } elseif ($withdrawal['status'] === 'erro') {
+                                        $statusText = 'Rejeitado';
+                                    } else {
+                                        $statusText = ucfirst($withdrawal['status']);
+                                    }
                                     ?>
                                     <span class="badge <?php echo $badgeClass; ?>">
-                                        <?php echo ucfirst($withdrawal['status']); ?>
+                                        <?php echo $statusText; ?>
                                     </span>
                                 </td>
                                 <td>
@@ -256,20 +259,18 @@ function showWithdrawalModal(withdrawal) {
     const modal = new bootstrap.Modal(document.getElementById('withdrawalModal'));
     const details = document.getElementById('withdrawalDetails');
     
-    const statusBadge = getStatusBadge(withdrawal.status);
+    const statusBadge = getStatusBadge(withdrawal.status, withdrawal.tipo);
     const typeBadge = `<span class="badge bg-info">${withdrawal.tipo.toUpperCase()}</span>`;
     
     let destinationInfo = '';
     if (withdrawal.tipo === 'pix') {
         destinationInfo = `
-            <p><strong>Tipo de Chave:</strong> ${withdrawal.tipo_chave || 'N/A'}</p>
-            <p><strong>Chave PIX:</strong> ${withdrawal.chave_pix || 'N/A'}</p>
-            <p><strong>Nome do Titular:</strong> ${withdrawal.receiver_name || 'N/A'}</p>
-            <p><strong>CPF:</strong> ${withdrawal.receiver_document || 'N/A'}</p>
+            <p><strong>Endereço/Chave:</strong> ${withdrawal.endereco_carteira || 'N/A'}</p>
+            <p><strong>Rede:</strong> ${withdrawal.rede || 'N/A'}</p>
         `;
     } else {
         destinationInfo = `
-            <p><strong>Endereço:</strong> <code>${withdrawal.endereco || 'N/A'}</code></p>
+            <p><strong>Endereço:</strong> <code>${withdrawal.endereco_carteira || 'N/A'}</code></p>
             <p><strong>Rede:</strong> ${withdrawal.rede || 'N/A'}</p>
         `;
     }
@@ -284,8 +285,8 @@ function showWithdrawalModal(withdrawal) {
             <div class="col-md-6">
                 <h6>Informações do Saque</h6>
                 <p><strong>ID:</strong> #${withdrawal.id}</p>
-                <p><strong>Valor USD:</strong> $${parseFloat(withdrawal.valor_usd).toFixed(2)}</p>
-                ${withdrawal.valor_brl ? `<p><strong>Valor BRL:</strong> R$ ${parseFloat(withdrawal.valor_brl).toFixed(2)}</p>` : ''}
+                <p><strong>Valor:</strong> $${parseFloat(withdrawal.valor).toFixed(2)}</p>
+                <p><strong>Taxa:</strong> $${parseFloat(withdrawal.taxa).toFixed(2)}</p>
                 <p><strong>Tipo:</strong> ${typeBadge}</p>
                 <p><strong>Status:</strong> ${statusBadge}</p>
             </div>
@@ -302,12 +303,21 @@ function showWithdrawalModal(withdrawal) {
     modal.show();
 }
 
-function getStatusBadge(status) {
+function getStatusBadge(status, tipo) {
     const badges = {
-        'aprovado': '<span class="badge bg-success">Aprovado</span>',
+        'pago': '<span class="badge bg-success">Pago</span>',
+        'completed': '<span class="badge bg-success">Completed</span>',
         'pendente': '<span class="badge bg-warning">Pendente</span>',
-        'rejeitado': '<span class="badge bg-danger">Rejeitado</span>'
+        'erro': '<span class="badge bg-danger">Rejeitado</span>'
     };
+    
+    // Verificar se é um status específico baseado no tipo
+    if (status === 'pago' && tipo === 'usdt') {
+        return '<span class="badge bg-success">Pago</span>';
+    } else if (status === 'completed' && tipo === 'pix') {
+        return '<span class="badge bg-success">Completed</span>';
+    }
+    
     return badges[status] || '<span class="badge bg-secondary">Desconhecido</span>';
 }
 
