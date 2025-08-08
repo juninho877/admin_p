@@ -42,8 +42,13 @@
             overflow-x: hidden;
         }
         
+        /* Desktop: Sidebar colapsado */
         .sidebar.collapsed {
             width: 70px;
+        }
+        
+        .sidebar.collapsed .sidebar-text {
+            display: none;
         }
         
         .sidebar .nav-link {
@@ -69,6 +74,22 @@
         
         .main-content.expanded {
             margin-left: 70px;
+        }
+        
+        /* Overlay para mobile */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+            display: none;
+        }
+        
+        .sidebar-overlay.show {
+            display: block;
         }
         
         /* Container responsivo */
@@ -330,18 +351,6 @@
             font-size: 0.875rem;
         }
         
-        /* Sidebar Overlay */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1040;
-            display: none;
-        }
-        
         /* === MEDIA QUERIES RESPONSIVAS === */
         
         /* Extra Large Devices (1400px and up) */
@@ -363,20 +372,19 @@
         /* Large Devices (1200px and down) */
         @media (max-width: 1199.98px) {
             .sidebar {
-                left: -250px;
-                z-index: 1050;
+                transform: translateX(-100%);
             }
             
             .sidebar.show {
-                left: 0;
+                transform: translateX(0);
             }
             
             .main-content {
                 margin-left: 0;
             }
             
-            .sidebar-overlay.show {
-                display: block;
+            .main-content.expanded {
+                margin-left: 0;
             }
             
             .container-fluid {
@@ -432,7 +440,6 @@
         @media (max-width: 767.98px) {
             .sidebar {
                 width: 280px;
-                left: -280px;
             }
             
             .main-content {
@@ -555,7 +562,6 @@
         @media (max-width: 575.98px) {
             .sidebar {
                 width: 85vw;
-                left: -85vw;
             }
             
             .sidebar-text {
@@ -713,7 +719,6 @@
         @media (max-width: 399.98px) {
             .sidebar {
                 width: 90vw;
-                left: -90vw;
             }
             
             .sidebar-text {

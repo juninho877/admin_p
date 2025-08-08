@@ -14,12 +14,108 @@
     
     <script>
         // Sidebar Toggle
-        document.getElementById('sidebarToggle').addEventListener('click', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('main-content');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            let overlay = null;
             
-            sidebar.classList.toggle('collapsed');
-            mainContent.classList.toggle('expanded');
+            function isMobile() {
+                return window.innerWidth <= 1199;
+            }
+            
+            function createOverlay() {
+                if (!overlay) {
+                    overlay = document.createElement('div');
+                    overlay.className = 'sidebar-overlay';
+                    document.body.appendChild(overlay);
+                    
+                    overlay.addEventListener('click', function() {
+                        closeSidebar();
+                    });
+                }
+                return overlay;
+            }
+            
+            function removeOverlay() {
+                if (overlay) {
+                    overlay.remove();
+                    overlay = null;
+                }
+            }
+            
+            function openSidebar() {
+                if (isMobile()) {
+                    sidebar.classList.add('show');
+                    createOverlay().classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('expanded');
+                }
+            }
+            
+            function closeSidebar() {
+                if (isMobile()) {
+                    sidebar.classList.remove('show');
+                    if (overlay) {
+                        overlay.classList.remove('show');
+                    }
+                    document.body.style.overflow = '';
+                } else {
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('expanded');
+                }
+            }
+            
+            function toggleSidebar() {
+                if (isMobile()) {
+                    if (sidebar.classList.contains('show')) {
+                        closeSidebar();
+                    } else {
+                        openSidebar();
+                    }
+                } else {
+                    if (sidebar.classList.contains('collapsed')) {
+                        openSidebar();
+                    } else {
+                        closeSidebar();
+                    }
+                }
+            }
+            
+            function initializeSidebar() {
+                if (isMobile()) {
+                    sidebar.classList.remove('show', 'collapsed');
+                    mainContent.classList.remove('expanded');
+                    removeOverlay();
+                    document.body.style.overflow = '';
+                } else {
+                    sidebar.classList.remove('show');
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('expanded');
+                    removeOverlay();
+                    document.body.style.overflow = '';
+                }
+            }
+            
+            // Event listeners
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            
+            // ESC key para fechar em mobile
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isMobile() && sidebar.classList.contains('show')) {
+                    closeSidebar();
+                }
+            });
+            
+            // Resize handler
+            window.addEventListener('resize', function() {
+                initializeSidebar();
+            });
+            
+            // Initialize on load
+            initializeSidebar();
         });
         
         // DataTables Default Config
@@ -248,49 +344,27 @@
             optimizeTooltips();
         });
         
-        // Sidebar Toggle Logic
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('main-content');
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            
-            function handleResize() {
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.add('collapsed');
-                    mainContent.classList.add('expanded');
-                } else {
-                    sidebar.classList.remove('collapsed');
-                    mainContent.classList.remove('expanded');
-                }
-            }
-            
-            // Initial check
-            handleResize();
-            
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                handleResize();
+        // Handle window resize for responsive optimizations
+        window.addEventListener('resize', function() {
+            // Reaplica otimizações responsivas
+            setTimeout(function() {
+                optimizeTablesForMobile();
+                adjustModalsForMobile();
+                adjustStatsCards();
+                optimizePagination();
+                optimizeTooltips();
+            }, 100);
+        });
+        
+        // Handle ESC key for modals and dropdowns
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Close any open modals
+                $('.modal.show').modal('hide');
                 
-                // Reaplica otimizações responsivas
-                setTimeout(function() {
-                    optimizeTablesForMobile();
-                    adjustModalsForMobile();
-                    adjustStatsCards();
-                    optimizePagination();
-                    optimizeTooltips();
-                }, 100);
-            });
-            
-            // Handle ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    // Close any open modals
-                    $('.modal.show').modal('hide');
-                    
-                    // Close any open dropdowns
-                    $('.dropdown-menu.show').removeClass('show');
-                }
-            });
+                // Close any open dropdowns
+                $('.dropdown-menu.show').removeClass('show');
+            }
         });
         
         // Função para detectar orientação em dispositivos móveis
