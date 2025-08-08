@@ -14,6 +14,16 @@ $filters = [
     'date_to' => sanitize($_GET['date_to'] ?? '')
 ];
 
+// Validação dos filtros de data
+if (!empty($filters['date_from']) || !empty($filters['date_to'])) {
+    if (empty($filters['date_from']) || empty($filters['date_to'])) {
+        sendNotification('error', 'Para usar o filtro de data, é obrigatório selecionar tanto a data inicial quanto a data final.');
+        // Limpar os filtros de data para evitar erro no banco
+        $filters['date_from'] = '';
+        $filters['date_to'] = '';
+    }
+}
+
 $page = (int)($_GET['page'] ?? 1);
 
 // Busca usuários
