@@ -136,16 +136,16 @@ include 'includes/header.php';
             </h5>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="table-responsive" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Nível</th>
-                            <th>Usuários</th>
-                            <th>Total Depositado</th>
-                            <th>Total Sacado</th>
-                            <th>Total Investido</th>
-                            <th>Comissões Geradas</th>
+                            <th style="min-width: 80px; white-space: nowrap;">Nível</th>
+                            <th style="min-width: 90px; white-space: nowrap;">Usuários</th>
+                            <th style="min-width: 140px; white-space: nowrap;">Total Depositado</th>
+                            <th style="min-width: 120px; white-space: nowrap;">Total Sacado</th>
+                            <th style="min-width: 130px; white-space: nowrap;">Total Investido</th>
+                            <th style="min-width: 140px; white-space: nowrap;">Comissões Geradas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,26 +172,34 @@ include 'includes/header.php';
                             $totalCommissions += $stats['total_commissions'];
                         ?>
                             <tr <?php echo $stats['total_users'] > 0 ? '' : 'class="text-muted"'; ?>>
-                                <td><strong>Nível <?php echo $level; ?></strong></td>
-                                <td><?php echo number_format($stats['total_users']); ?></td>
-                                <td><?php echo formatMoney($stats['total_deposits'], 'USD'); ?></td>
-                                <td><?php echo formatMoney($stats['total_withdrawals'], 'USD'); ?></td>
-                                <td><?php echo formatMoney($stats['total_investments'], 'USD'); ?></td>
-                                <td><?php echo formatMoney($stats['total_commissions'], 'USD'); ?></td>
+                                <td style="white-space: nowrap;"><strong>Nível <?php echo $level; ?></strong></td>
+                                <td style="text-align: center;"><?php echo number_format($stats['total_users']); ?></td>
+                                <td style="text-align: right; white-space: nowrap;"><?php echo formatMoney($stats['total_deposits'], 'USD'); ?></td>
+                                <td style="text-align: right; white-space: nowrap;"><?php echo formatMoney($stats['total_withdrawals'], 'USD'); ?></td>
+                                <td style="text-align: right; white-space: nowrap;"><?php echo formatMoney($stats['total_investments'], 'USD'); ?></td>
+                                <td style="text-align: right; white-space: nowrap;"><?php echo formatMoney($stats['total_commissions'], 'USD'); ?></td>
                             </tr>
                         <?php endfor; ?>
                     </tbody>
                     <tfoot class="table-dark">
                         <tr>
-                            <th>TOTAL</th>
-                            <th><?php echo number_format($totalUsers); ?></th>
-                            <th><?php echo formatMoney($totalDeposits, 'USD'); ?></th>
-                            <th><?php echo formatMoney($totalWithdrawals, 'USD'); ?></th>
-                            <th><?php echo formatMoney($totalInvestments, 'USD'); ?></th>
-                            <th><?php echo formatMoney($totalCommissions, 'USD'); ?></th>
+                            <th style="white-space: nowrap;">TOTAL</th>
+                            <th style="text-align: center;"><?php echo number_format($totalUsers); ?></th>
+                            <th style="text-align: right; white-space: nowrap;"><?php echo formatMoney($totalDeposits, 'USD'); ?></th>
+                            <th style="text-align: right; white-space: nowrap;"><?php echo formatMoney($totalWithdrawals, 'USD'); ?></th>
+                            <th style="text-align: right; white-space: nowrap;"><?php echo formatMoney($totalInvestments, 'USD'); ?></th>
+                            <th style="text-align: right; white-space: nowrap;"><?php echo formatMoney($totalCommissions, 'USD'); ?></th>
                         </tr>
                     </tfoot>
                 </table>
+            </div>
+            
+            <!-- Indicador de scroll para mobile -->
+            <div class="d-block d-md-none">
+                <small class="text-muted d-flex align-items-center justify-content-center mt-2">
+                    <i class="fas fa-arrows-alt-h me-1"></i>
+                    Deslize horizontalmente para ver mais dados
+                </small>
             </div>
         </div>
     </div>
