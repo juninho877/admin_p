@@ -153,11 +153,11 @@ include 'includes/header.php';
                         <tr>
                             <th>ID</th>
                             <th>Nome</th>
-                            <th class="d-none d-md-table-cell">Comportamento</th>
-                            <th class="d-none d-sm-table-cell">Investimentos Ativos</th>
-                            <th class="d-none d-lg-table-cell">Total Investido</th>
+                            <th>Comportamento</th>
+                            <th>Investimentos Ativos</th>
+                            <th>Total Investido</th>
                             <th>Status</th>
-                            <th class="d-none d-lg-table-cell">Data Criação</th>
+                            <th>Data Criação</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -180,7 +180,7 @@ include 'includes/header.php';
                                         </div>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-table-cell">
+                                <td>
                                     <?php
                                     $comportamentoBadge = match($product['comportamento']) {
                                         'conservador' => 'bg-success',
@@ -193,12 +193,12 @@ include 'includes/header.php';
                                         <?php echo ucfirst($product['comportamento']); ?>
                                     </span>
                                 </td>
-                                <td class="d-none d-sm-table-cell">
+                                <td>
                                     <span class="badge bg-info">
                                         <?php echo $product['active_investments']; ?>
                                     </span>
                                 </td>
-                                <td class="d-none d-lg-table-cell">
+                                <td>
                                     <span class="fw-bold text-success">
                                         <?php echo formatMoney($product['total_invested'], 'USD'); ?>
                                     </span>
@@ -212,11 +212,11 @@ include 'includes/header.php';
                                         <?php echo $statusText; ?>
                                     </span>
                                 </td>
-                                <td class="d-none d-lg-table-cell">
+                                <td>
                                     <small><?php echo formatDate($product['created_at']); ?></small>
                                 </td>
                                 <td>
-                                    <div class="btn-group btn-group-sm" role="group">
+                                    <div class="btn-group" role="group">
                                         <a href="product_detail.php?id=<?php echo $product['id']; ?>" 
                                            class="btn btn-sm btn-outline-primary" 
                                            data-bs-toggle="tooltip" title="Ver Detalhes">

@@ -73,7 +73,7 @@ include 'includes/header.php';
 <?php if ($report): ?>
     <!-- Resumo Executivo -->
     <div class="row mb-4">
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 mb-3 mb-xl-4">
+        <div class="col-xl-3 col-md-6 mb-4">
             <div class="stats-card">
                 <div class="stats-icon" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
                     <i class="fas fa-arrow-down"></i>
@@ -86,7 +86,7 @@ include 'includes/header.php';
             </div>
         </div>
         
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 mb-3 mb-xl-4">
+        <div class="col-xl-3 col-md-6 mb-4">
             <div class="stats-card">
                 <div class="stats-icon" style="background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);">
                     <i class="fas fa-arrow-up"></i>
@@ -99,7 +99,7 @@ include 'includes/header.php';
             </div>
         </div>
         
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 mb-3 mb-xl-4">
+        <div class="col-xl-3 col-md-6 mb-4">
             <div class="stats-card">
                 <div class="stats-icon" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
                     <i class="fas fa-chart-line"></i>
@@ -112,7 +112,7 @@ include 'includes/header.php';
             </div>
         </div>
         
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 mb-3 mb-xl-4">
+        <div class="col-xl-3 col-md-6 mb-4">
             <div class="stats-card">
                 <div class="stats-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                     <i class="fas fa-percentage"></i>
@@ -128,7 +128,7 @@ include 'includes/header.php';
 
     <!-- Análise Detalhada -->
     <div class="row mb-4">
-        <div class="col-xl-8 col-lg-12 mb-4">
+        <div class="col-xl-8 mb-4">
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">
@@ -234,7 +234,7 @@ include 'includes/header.php';
             </div>
         </div>
         
-        <div class="col-xl-4 col-lg-12 mb-4">
+        <div class="col-xl-4 mb-4">
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">
@@ -297,7 +297,7 @@ include 'includes/header.php';
             </h5>
         </div>
         <div class="card-body">
-            <div style="position: relative; height: 60vh; max-height: 400px; min-height: 300px;">
+            <div style="position: relative; height: 400px;">
                 <canvas id="performanceChart"></canvas>
             </div>
         </div>
