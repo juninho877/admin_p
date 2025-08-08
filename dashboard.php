@@ -15,12 +15,36 @@ $db = new Database();
 $userGrowth = $db->fetchAll("
     SELECT 
         DATE_FORMAT(created_at, '%Y-%m') as month,
+        DATE_FORMAT(created_at, '%m/%Y') as month_label,
         COUNT(*) as count
     FROM users 
     WHERE created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
     GROUP BY DATE_FORMAT(created_at, '%Y-%m')
     ORDER BY month ASC
 ");
+
+// Preencher meses sem dados com zero
+$monthsData = [];
+$labelsData = [];
+for ($i = 11; $i >= 0; $i--) {
+    $monthKey = date('Y-m', strtotime("-{$i} months"));
+    $monthLabel = date('m/Y', strtotime("-{$i} months"));
+    
+    $found = false;
+    foreach ($userGrowth as $data) {
+        if ($data['month'] === $monthKey) {
+            $monthsData[] = (int)$data['count'];
+            $found = true;
+            break;
+        }
+    }
+    
+    if (!$found) {
+        $monthsData[] = 0;
+    }
+    
+    $labelsData[] = $monthLabel;
+}
 
 // Gráfico financeiro (últimos 30 dias)
 $financialChart = $db->fetchAll("
@@ -124,11 +148,28 @@ include 'includes/header.php';
             <div class="card-header">
                 <h5 class="mb-0">
                     <i class="fas fa-user-plus me-2"></i>
-                    Crescimento de Usuários
+                    Usuários por Status
                 </h5>
             </div>
             <div class="card-body">
-                <canvas id="userGrowthChart" height="200"></canvas>
+                <canvas id="userStatusChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Growth Chart -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-area me-2"></i>
+                    Crescimento de Usuários (Últimos 12 meses)
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="userGrowthChart" height="80"></canvas>
             </div>
         </div>
     </div>
@@ -283,8 +324,51 @@ const financialChart = new Chart(financialCtx, {
 });
 
 // User Growth Chart
-const userCtx = document.getElementById('userGrowthChart').getContext('2d');
+const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
 const userGrowthChart = new Chart(userCtx, {
+    type: 'line',
+    data: {
+        labels: <?php echo json_encode($labelsData); ?>,
+        datasets: [{
+            label: 'Novos Usuários',
+            data: [
+                <?php echo implode(',', $monthsData); ?>
+            ],
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return 'Novos usuários: ' + context.parsed.y;
+                    }
+                }
+            }
+        }
+    }
+});
+
+// User Status Chart (Doughnut)
+const userStatusCtx = document.getElementById('userStatusChart').getContext('2d');
+const userStatusChart = new Chart(userStatusCtx, {
     type: 'doughnut',
     data: {
         labels: ['Usuários Ativos', 'Usuários Bloqueados'],
