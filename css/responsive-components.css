@@ -1,0 +1,601 @@
+/* ==========================================================================
+   RESPONSIVE COMPONENTS LIBRARY
+   ========================================================================== */
+
+/* ==========================================================================
+   RESPONSIVE TABLE COMPONENT
+   ========================================================================== */
+
+.responsive-table-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.responsive-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.responsive-table thead th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    font-weight: 600;
+    text-align: left;
+    border: none;
+    white-space: nowrap;
+}
+
+.responsive-table tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.responsive-table tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+}
+
+.responsive-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Mobile table styles */
+@media (max-width: 767px) {
+    .responsive-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .responsive-table {
+        min-width: 600px;
+        font-size: 0.75rem;
+    }
+    
+    .responsive-table thead th,
+    .responsive-table tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .responsive-table thead th {
+        font-size: 0.75rem;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE FORM COMPONENT
+   ========================================================================== */
+
+.responsive-form {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.responsive-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.responsive-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.responsive-form .form-control,
+.responsive-form .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    min-height: 48px;
+    width: 100%;
+}
+
+.responsive-form .form-control:focus,
+.responsive-form .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    outline: none;
+}
+
+.responsive-form .btn {
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* Mobile form adjustments */
+@media (max-width: 767px) {
+    .responsive-form {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+    
+    .responsive-form .form-control,
+    .responsive-form .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .responsive-form .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE CARD COMPONENT
+   ========================================================================== */
+
+.responsive-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.responsive-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.responsive-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-bottom: none;
+}
+
+.responsive-card-header h5 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+.responsive-card-body {
+    padding: 1.5rem;
+}
+
+.responsive-card-footer {
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Mobile card adjustments */
+@media (max-width: 767px) {
+    .responsive-card {
+        margin: 0.5rem;
+        border-radius: 8px;
+    }
+    
+    .responsive-card-header,
+    .responsive-card-body {
+        padding: 1rem;
+    }
+    
+    .responsive-card-header h5 {
+        font-size: 1rem;
+    }
+    
+    .responsive-card-footer {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE STATS COMPONENT
+   ========================================================================== */
+
+.stats-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    margin-bottom: 2rem;
+}
+
+.stats-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.stats-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stats-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.stats-label {
+    color: #718096;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.stats-change {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.stats-change.positive {
+    color: #38a169;
+}
+
+.stats-change.negative {
+    color: #e53e3e;
+}
+
+/* Responsive stats grid */
+@media (min-width: 576px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+    
+    .stats-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.75rem;
+    }
+    
+    .stats-value {
+        font-size: 2.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .stats-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    
+    .stats-value {
+        font-size: 2.5rem;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE BUTTON COMPONENT
+   ========================================================================== */
+
+.btn-responsive {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    min-height: 44px;
+    font-size: 0.875rem;
+}
+
+.btn-responsive:hover {
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.btn-responsive:active {
+    transform: translateY(0);
+}
+
+.btn-responsive.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-responsive.btn-primary:hover {
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    color: white;
+}
+
+.btn-responsive.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-responsive.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-responsive.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-responsive.btn-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-responsive.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-responsive.btn-outline-primary {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+}
+
+.btn-responsive.btn-outline-primary:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* Mobile button adjustments */
+@media (max-width: 767px) {
+    .btn-responsive {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+    
+    .btn-group-responsive {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .btn-group-responsive .btn-responsive {
+        margin: 0;
+    }
+}
+
+@media (min-width: 768px) {
+    .btn-group-responsive {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-group-responsive .btn-responsive {
+        flex: 0 0 auto;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE MODAL COMPONENT
+   ========================================================================== */
+
+.modal-responsive .modal-dialog {
+    margin: 1rem;
+    max-width: calc(100% - 2rem);
+}
+
+.modal-responsive .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-responsive .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    border: none;
+    padding: 1.5rem;
+}
+
+.modal-responsive .modal-body {
+    padding: 1.5rem;
+}
+
+.modal-responsive .modal-footer {
+    padding: 1rem 1.5rem 1.5rem;
+    border: none;
+}
+
+/* Mobile modal adjustments */
+@media (max-width: 767px) {
+    .modal-responsive .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+    
+    .modal-responsive .modal-header,
+    .modal-responsive .modal-body {
+        padding: 1rem;
+    }
+    
+    .modal-responsive .modal-footer {
+        padding: 0.75rem 1rem 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .modal-responsive .modal-footer .btn {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE NAVIGATION COMPONENT
+   ========================================================================== */
+
+.nav-responsive {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 0;
+}
+
+.nav-responsive .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-height: 48px;
+}
+
+.nav-responsive .nav-link:hover,
+.nav-responsive .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateX(4px);
+}
+
+.nav-responsive .nav-link i {
+    width: 20px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+/* Mobile navigation adjustments */
+@media (max-width: 767px) {
+    .nav-responsive {
+        padding: 0.5rem 0;
+    }
+    
+    .nav-responsive .nav-link {
+        padding: 1rem;
+        font-size: 1rem;
+        min-height: 52px;
+    }
+    
+    .nav-responsive .nav-link i {
+        font-size: 1.125rem;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE ALERT COMPONENT
+   ========================================================================== */
+
+.alert-responsive {
+    border-radius: 8px;
+    border: none;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.alert-responsive .alert-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 0.125rem;
+}
+
+.alert-responsive .alert-content {
+    flex: 1;
+}
+
+.alert-responsive .alert-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.alert-responsive .alert-message {
+    margin: 0;
+    opacity: 0.9;
+}
+
+.alert-responsive.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+}
+
+.alert-responsive.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+}
+
+.alert-responsive.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+}
+
+.alert-responsive.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+}
+
+/* Mobile alert adjustments */
+@media (max-width: 767px) {
+    .alert-responsive {
+        margin: 0.5rem;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+    }
+    
+    .alert-responsive .alert-title {
+        font-size: 0.875rem;
+    }
+    
+    .alert-responsive .alert-message {
+        font-size: 0.8125rem;
+    }
+}
