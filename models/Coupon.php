@@ -31,9 +31,9 @@ class Coupon {
         
         if (!empty($filters['status'])) {
             if ($filters['status'] === 'valido') {
-                $where[] = "validade >= CURDATE()";
+                $where[] = "validade >= NOW()";
             } elseif ($filters['status'] === 'expirado') {
-                $where[] = "validade < CURDATE()";
+                $where[] = "validade < NOW()";
             }
         }
         
@@ -209,8 +209,8 @@ class Coupon {
             SELECT 
                 COUNT(*) as total_cupons,
                 COUNT(CASE WHEN ativo = 1 THEN 1 END) as cupons_ativos,
-                COUNT(CASE WHEN validade >= CURDATE() THEN 1 END) as cupons_validos,
-                COUNT(CASE WHEN validade < CURDATE() THEN 1 END) as cupons_expirados,
+                COUNT(CASE WHEN validade >= NOW() THEN 1 END) as cupons_validos,
+                COUNT(CASE WHEN validade < NOW() THEN 1 END) as cupons_expirados,
                 (SELECT COUNT(*) FROM cupons_usuarios) as total_resgates,
                 (SELECT COALESCE(SUM(valor_usd), 0) FROM cupons_usuarios) as valor_total_resgatado
             FROM cupons_bonus

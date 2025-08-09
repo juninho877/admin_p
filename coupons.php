@@ -352,7 +352,7 @@ include 'includes/header.php';
                     
                     <div class="mb-3">
                         <label for="validade" class="form-label">Data de Validade *</label>
-                        <input type="date" class="form-control" id="validade" name="validade" required>
+                        <input type="datetime-local" class="form-control" id="validade" name="validade" required>
                     </div>
                     
                     <div class="row">
@@ -557,6 +557,10 @@ document.getElementById('couponModal').addEventListener('hidden.bs.modal', funct
     document.getElementById('valor_maximo').value = '2.00';
 });
 
+// Set minimum datetime to now
+const now = new Date();
+now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+document.getElementById('validade').min = now.toISOString().slice(0, 16);
 // Set minimum date to today
 document.getElementById('validade').min = new Date().toISOString().split('T')[0];
 </script>
