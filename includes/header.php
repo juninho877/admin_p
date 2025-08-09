@@ -906,6 +906,14 @@
             </li>
             
             <li class="nav-item">
+                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'coupons.php' ? 'active' : ''; ?>" 
+                   href="coupons.php">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span class="sidebar-text">Cupons</span>
+                </a>
+            </li>
+            
+            <li class="nav-item">
                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'affiliates.php' ? 'active' : ''; ?>" 
                    href="affiliates.php">
                     <i class="fas fa-network-wired"></i>
