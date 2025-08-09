@@ -169,7 +169,7 @@ include 'includes/header.php';
                 <label for="search" class="form-label">Buscar Código</label>
                 <input type="text" class="form-control" id="search" name="search" 
                        value="<?php echo escape($filters['search']); ?>" 
-                       placeholder="CUPOM-123456">
+                       placeholder="BEEFUND-123456">
             </div>
             
             <div class="col-md-2">
@@ -342,7 +342,7 @@ include 'includes/header.php';
                         <label for="codigo" class="form-label">Código do Cupom *</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="codigo" name="codigo" required 
-                                   placeholder="CUPOM-123456" style="text-transform: uppercase;">
+                                   placeholder="BEEFUND-123456" style="text-transform: uppercase;">
                             <button type="button" class="btn btn-outline-secondary" onclick="generateCode()">
                                 <i class="fas fa-random"></i>
                             </button>
@@ -421,7 +421,7 @@ include 'includes/header.php';
 
 <script>
 function generateCode() {
-    const prefix = 'CUPOM';
+    const prefix = 'BEEFUND';
     const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
     document.getElementById('codigo').value = prefix + '-' + randomPart;
 }

@@ -192,7 +192,7 @@ class Coupon {
     /**
      * Gera código único para cupom
      */
-    public function generateUniqueCode($prefix = 'CUPOM') {
+    public function generateUniqueCode($prefix = 'BEEFUND') {
         do {
             $code = $prefix . '-' . strtoupper(substr(md5(uniqid(rand(), true)), 0, 6));
             $existing = $this->db->fetch("SELECT id FROM cupons_bonus WHERE codigo = ?", [$code]);
