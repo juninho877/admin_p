@@ -566,14 +566,27 @@ document.getElementById('couponModal').addEventListener('hidden.bs.modal', funct
     document.getElementById('ativo').checked = true;
     document.getElementById('valor_minimo').value = '0.10';
     document.getElementById('valor_maximo').value = '2.00';
+    
+    // Resetar data de validade para 2 horas a partir de agora
+    const now = new Date();
+    const twoHoursFromNow = new Date(now.getTime() + (2 * 60 * 60 * 1000));
+    twoHoursFromNow.setMinutes(twoHoursFromNow.getMinutes() - twoHoursFromNow.getTimezoneOffset());
+    document.getElementById('validade').value = twoHoursFromNow.toISOString().slice(0, 16);
 });
 
 // Set minimum datetime to now
 const now = new Date();
+const twoHoursFromNow = new Date(now.getTime() + (2 * 60 * 60 * 1000)); // Adiciona 2 horas
+
+// Ajustar para timezone local
 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+twoHoursFromNow.setMinutes(twoHoursFromNow.getMinutes() - twoHoursFromNow.getTimezoneOffset());
+
+// Definir valor mínimo (agora)
 document.getElementById('validade').min = now.toISOString().slice(0, 16);
-// Set minimum date to today
-document.getElementById('validade').min = new Date().toISOString().split('T')[0];
+
+// Definir valor padrão (2 horas a partir de agora)
+document.getElementById('validade').value = twoHoursFromNow.toISOString().slice(0, 16);
 </script>
 
 <?php include 'includes/footer.php'; ?>
