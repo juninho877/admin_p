@@ -391,7 +391,7 @@ include 'includes/header.php';
 
 <!-- Modal de Resgates -->
 <div class="modal fade" id="redemptionsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered mx-auto">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
