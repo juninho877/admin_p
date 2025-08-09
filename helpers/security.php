@@ -98,6 +98,15 @@ function logLoginAttempt($email, $success = false, $ip = null) {
         } else {
             $ip = $_SERVER['REMOTE_ADDR'];
         }
+        if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        } 
+        // Fallback para outros proxies
+        elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
     }
     
     $sql = "INSERT INTO login_attempts (email, success, ip_address, created_at) 
