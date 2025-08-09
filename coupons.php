@@ -244,7 +244,7 @@ include 'includes/header.php';
                                 </td>
                                 <td data-label="Validade">
                                     <div>
-                                        <small><?php echo formatDate($coupon['validade'], 'd/m/Y'); ?></small>
+                                        <small><?php echo formatDate($coupon['validade'], 'd/m/Y H:i'); ?></small>
                                         <br>
                                         <?php
                                         $validadeBadge = $coupon['status_validade'] === 'valido' ? 'bg-success' : 'bg-danger';
@@ -431,7 +431,18 @@ function editCoupon(coupon) {
     document.getElementById('coupon_action').value = 'update';
     document.getElementById('coupon_id').value = coupon.id;
     document.getElementById('codigo').value = coupon.codigo;
-    document.getElementById('validade').value = coupon.validade.split(' ')[0]; // Remove time part
+    
+    // Converter data do formato MySQL para datetime-local
+    const validadeDate = new Date(coupon.validade);
+    const year = validadeDate.getFullYear();
+    const month = String(validadeDate.getMonth() + 1).padStart(2, '0');
+    const day = String(validadeDate.getDate()).padStart(2, '0');
+    const hours = String(validadeDate.getHours()).padStart(2, '0');
+    const minutes = String(validadeDate.getMinutes()).padStart(2, '0');
+    
+    const datetimeLocal = `${year}-${month}-${day}T${hours}:${minutes}`;
+    document.getElementById('validade').value = datetimeLocal;
+    
     document.getElementById('valor_minimo').value = coupon.valor_minimo;
     document.getElementById('valor_maximo').value = coupon.valor_maximo;
     document.getElementById('ativo').checked = coupon.ativo == 1;
