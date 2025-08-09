@@ -198,7 +198,8 @@ include 'includes/header.php';
                     <i class="fas fa-times me-1"></i>Limpar
                 </a>
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#couponModal">
-                    <i class="fas fa-plus me-1"></i>Novo Cupom
+                    <i class="fas fa-plus"></i>
+                    <span class="d-none d-md-inline ms-1">Novo Cupom</span>
                 </button>
             </div>
         </form>
