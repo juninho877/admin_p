@@ -262,6 +262,41 @@ include 'includes/header.php';
             </div>
         </div>
     </div>
+    
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-key me-2"></i>
+                    Alterar Senha
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action_password_change" value="1">
+                    
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">Nova Senha *</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" 
+                               minlength="6" required>
+                        <small class="text-muted">Mínimo de 6 caracteres</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirm_new_password" class="form-label">Confirmar Nova Senha *</label>
+                        <input type="password" class="form-control" id="confirm_new_password" name="confirm_new_password" 
+                               minlength="6" required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-key me-1"></i>Alterar Senha
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal de Gerenciamento de Saldo -->

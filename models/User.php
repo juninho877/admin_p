@@ -113,6 +113,17 @@ class User {
     }
     
     /**
+     * Atualiza senha do usuário
+     */
+    public function updateUserPassword($userId, $newPassword) {
+        $hashedPassword = hashPassword($newPassword);
+        
+        $sql = "UPDATE users SET password = ?, updated_at = ? WHERE id = ?";
+        
+        return $this->db->query($sql, [$hashedPassword, date('Y-m-d H:i:s'), $userId]);
+    }
+    
+    /**
      * Busca histórico de transações do usuário
      */
     public function getUserTransactions($userId, $page = 1, $limit = 20) {
