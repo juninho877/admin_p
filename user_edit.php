@@ -21,49 +21,90 @@ $pageTitle = 'Editar Usuário - ' . $user['name'];
 
 // Processar formulário
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = [
-        'name' => sanitize($_POST['name']),
-        'email' => sanitize($_POST['email']),
-        'telefone' => sanitize($_POST['telefone']),
-        'cpf' => sanitize($_POST['cpf']),
-        'status' => sanitize($_POST['status'])
-    ];
-    
-    // Validações
-    $errors = [];
-    
-    if (empty($data['name'])) {
-        $errors[] = 'Nome é obrigatório';
-    }
-    
-    if (empty($data['email']) || !validateEmail($data['email'])) {
-        $errors[] = 'Email válido é obrigatório';
-    }
-    
-    if (!empty($data['cpf']) && !validateCPF($data['cpf'])) {
-        $errors[] = 'CPF inválido';
-    }
-    
-    // Verificar se email já existe (exceto para o próprio usuário)
-    $db = new Database();
-    $existingUser = $db->fetch(
-        "SELECT id FROM users WHERE email = ? AND id != ?",
-        [$data['email'], $userId]
-    );
-    
-    if ($existingUser) {
-        $errors[] = 'Este email já está sendo usado por outro usuário';
-    }
-    
-    if (empty($errors)) {
-        try {
-            $userModel->updateUser($userId, $data);
-            logAction('USER_UPDATED', "Usuário atualizado: {$data['name']} (ID: {$userId})", $_SESSION['admin_id']);
-            sendNotification('success', 'Usuário atualizado com sucesso!');
-            header('Location: user_detail.php?id=' . $userId);
-            exit;
-        } catch (Exception $e) {
-            $errors[] = 'Erro ao atualizar usuário: ' . $e->getMessage();
+    // Verificar se é alteração de senha
+    if (isset($_POST['action_password_change'])) {
+        $newPassword = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_new_password'] ?? '';
+        
+        // Validações da senha
+        $errors = [];
+        
+        if (empty($newPassword)) {
+            $errors[] = 'Nova senha é obrigatória';
+        }
+        
+        if (empty($confirmPassword)) {
+            $errors[] = 'Confirmação de senha é obrigatória';
+        }
+        
+        if (strlen($newPassword) < 6) {
+            $errors[] = 'A senha deve ter pelo menos 6 caracteres';
+        }
+        
+        if ($newPassword !== $confirmPassword) {
+            $errors[] = 'As senhas não coincidem';
+        }
+        
+        if (empty($errors)) {
+            try {
+                $userModel->updateUserPassword($userId, $newPassword);
+                logAction('USER_PASSWORD_UPDATED', "Senha atualizada para usuário ID: {$userId}", $_SESSION['admin_id']);
+                sendNotification('success', 'Senha atualizada com sucesso!');
+                header('Location: user_edit.php?id=' . $userId);
+                exit;
+            } catch (Exception $e) {
+                $errors[] = 'Erro ao atualizar senha: ' . $e->getMessage();
+            }
+        }
+    } else {
+        // Processar atualização de dados do usuário
+        $data = [
+            'name' => sanitize($_POST['name']),
+            'email' => sanitize($_POST['email']),
+            'telefone' => sanitize($_POST['telefone']),
+            'cpf' => sanitize($_POST['cpf']),
+            'status' => sanitize($_POST['status'])
+        ];
+        
+        // Validações
+        $errors = [];
+        
+        if (empty($data['name'])) {
+            $errors[] = 'Nome é obrigatório';
+        }
+        
+        // Email é opcional, mas se fornecido deve ser válido
+        if (!empty($data['email']) && !validateEmail($data['email'])) {
+            $errors[] = 'Email deve ter um formato válido';
+        }
+        
+        if (!empty($data['cpf']) && !validateCPF($data['cpf'])) {
+            $errors[] = 'CPF inválido';
+        }
+        
+        // Verificar se email já existe (apenas se email foi fornecido)
+        if (!empty($data['email'])) {
+            $db = new Database();
+            $existingUser = $db->fetch(
+                "SELECT id FROM users WHERE email = ? AND id != ?",
+                [$data['email'], $userId]
+            );
+            
+            if ($existingUser) {
+                $errors[] = 'Este email já está sendo usado por outro usuário';
+            }
+        }
+        
+        if (empty($errors)) {
+            try {
+                $userModel->updateUser($userId, $data);
+                logAction('USER_UPDATED', "Usuário atualizado: {$data['name']} (ID: {$userId})", $_SESSION['admin_id']);
+                sendNotification('success', 'Usuário atualizado com sucesso!');
+                header('Location: user_detail.php?id=' . $userId);
+                exit;
+            } catch (Exception $e) {
+                $errors[] = 'Erro ao atualizar usuário: ' . $e->getMessage();
+            }
         }
     }
 }
@@ -114,9 +155,9 @@ include 'includes/header.php';
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label for="email" class="form-label">Email *</label>
+                            <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" name="email" 
-                                   value="<?php echo escape($user['email']); ?>" required>
+                                   value="<?php echo escape($user['email']); ?>">
                         </div>
                     </div>
                     
