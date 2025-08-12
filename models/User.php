@@ -20,8 +20,9 @@ class User {
         
         // Filtros
         if (!empty($filters['search'])) {
-            $where[] = "(name LIKE ? OR email LIKE ? OR cpf LIKE ?)";
+            $where[] = "(name LIKE ? OR email LIKE ? OR cpf LIKE ? OR telefone LIKE ?)";
             $search = '%' . $filters['search'] . '%';
+            $params[] = $search;
             $params[] = $search;
             $params[] = $search;
             $params[] = $search;

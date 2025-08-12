@@ -55,7 +55,7 @@ include 'includes/header.php';
                 <label for="search" class="form-label">Buscar</label>
                 <input type="text" class="form-control" id="search" name="search" 
                        value="<?php echo escape($filters['search']); ?>" 
-                       placeholder="Nome, email ou CPF">
+                       placeholder="Nome, email, CPF ou telefone">
             </div>
             
             <div class="col-md-2">
