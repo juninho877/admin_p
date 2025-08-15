@@ -82,8 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'CPF inválido';
         }
         
+        // Converter email vazio para NULL para evitar violação de unicidade
+        if (empty($data['email'])) {
+            $data['email'] = null;
+        }
+        
         // Verificar se email já existe (apenas se email foi fornecido)
-        if (!empty($data['email'])) {
+        if ($data['email'] !== null) {
             $db = new Database();
             $existingUser = $db->fetch(
                 "SELECT id FROM users WHERE email = ? AND id != ?",
